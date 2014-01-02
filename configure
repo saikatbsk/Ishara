@@ -1,6 +1,11 @@
 #!/bin/bash
 function jacksparrow() {
-  /usr/bin/qmake -spec /usr/share/qt4/mkspecs/linux-g++ -o build/Makefile src/ishara.pro;
+  if [ -f /usr/bin/qmake-qt4 ]
+  then
+    /usr/bin/qmake-qt4 -spec /usr/share/qt4/mkspecs/linux-g++ -o build/Makefile src/ishara.pro;
+  else
+    /usr/bin/qmake -spec /usr/share/qt4/mkspecs/linux-g++ -o build/Makefile src/ishara.pro;
+  fi
 }
 
 if [ -d build ]
