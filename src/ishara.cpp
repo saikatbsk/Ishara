@@ -6,7 +6,7 @@
  * License     : GPLv2
  *
  * Description : This is where the fun begins
- * TODO        : right click, int trackobject, crom image to move mouse
+ * TODO        : right click, int trackobject, crop image to move mouse
  *
  * *** *** *** *** *** *** *** *** *** *** *** ***
  */
