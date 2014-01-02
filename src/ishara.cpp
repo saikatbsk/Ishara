@@ -365,6 +365,7 @@ void ishara::processFrameAndUpdateGUI() {
      */
     cv::Rect rec(Margin, Margin, frame.cols - (2 * Margin), frame.rows - (2 * Margin));
     cv::rectangle(frame, rec, cv::Scalar(0, 0, 255), 1, 8, 0);
+    cv::putText(frame, "Move index finger inside the box.", cv::Point(Margin + 20, Margin + 20), CV_FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 255), 1, 8, false);
 
     mcorInit_X = pos_x1;
     mcorInit_Y = pos_y1;
