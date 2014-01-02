@@ -1,0 +1,12 @@
+#!/bin/bash
+function jacksparrow() {
+  /usr/bin/qmake -spec /usr/share/qt4/mkspecs/linux-g++ -o build/Makefile src/ishara.pro;
+}
+
+if [ -d build ]
+then
+  jacksparrow;
+else
+  mkdir build;
+  jacksparrow;
+fi

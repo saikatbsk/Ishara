@@ -23,7 +23,7 @@ OpenCV (opencv.org)
 Qt Development Libraries
 V4l2 Development Libraries
 XTEST Extension Libraries
-CMake 2.8
+QMake
 Make
 
 Once you have setup the dependencies, download the source,
@@ -31,19 +31,15 @@ Once you have setup the dependencies, download the source,
 $ cd ~/Downloads
 $ git clone https://github.com/saikatbsk/Ishara.git
 
-Move to the directory Ishara, create build directory and move to build directory.
+Move to the directory Ishara, and run configure.
 
 $ cd Ishara
-$ mkdir build
+$ chmod u+x configure
+$ ./configure
+
+Move to directory build and run make.
+
 $ cd build
-
-Run cmake and then make to build it.
-
-$ cmake ..
 $ make
-
-To install ishare you can run "sudo make install"
-
-$ sudo make install
 
 Live long and may the force be with you ;)
