@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/prefix1">
+        <file>res/ishara.png</file>
+        <file>res/ishara.ico</file>
+    </qresource>
+</RCC>
