@@ -6,7 +6,6 @@
  * License     : GPLv2
  *
  * Description : This is where the fun begins
- * TODO        : right click, int trackobject, crop image to move mouse
  *
  * *** *** *** *** *** *** *** *** *** *** *** ***
  */
@@ -85,6 +84,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     msPoint_Y = 0;
     xScreenHeight = 0;
     xScreenWidth = 0;
+    Margin = 100;
     startEmulation = 0;
     tmpX = 0;
     tmpY = 0;
@@ -106,7 +106,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
      * distance the index finger can move without effecting any change in the mouse
      * cursor position. A reasonable value for this would be 6 to 8 depending on the user.
      */
-    ui->sliderSmoothFac->setRange(4, 12);
+    ui->sliderSmoothFac->setRange(2, 12);
     ui->sliderSmoothFac->setValue(smoothFac);
 
     /**
@@ -360,6 +360,12 @@ void ishara::processFrameAndUpdateGUI() {
                 imgThresh2);
     trackObject(&imgThresh2, &pos_x2, &pos_y2);
 
+    /**
+     * Draw the effective region.
+     */
+    cv::Rect rec(Margin, Margin, frame.cols - (2 * Margin), frame.rows - (2 * Margin));
+    cv::rectangle(frame, rec, cv::Scalar(0, 0, 255), 1, 8, 0);
+
     mcorInit_X = pos_x1;
     mcorInit_Y = pos_y1;
 
@@ -473,7 +479,7 @@ void ishara::processFrameAndUpdateGUI() {
     imgThresh2.release();
 }
 
-void ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
+int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
     cv::Moments moment;
     moment = moments(*imgThresh);
 
@@ -489,7 +495,11 @@ void ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
     if(moment00 > 20000 && moment00 < 20000000) {
         *posx = moment10 / moment00;
         *posy = moment01 / moment00;
+
+        return 1;
     }
+    else
+        return 0;
 }
 
 void ishara::getxScreenSize() {
@@ -538,11 +548,13 @@ void::ishara::mouseMap() {
 }
 
 void::ishara::project() {
-    float ratio_w = float(xScreenWidth) / float(frame.cols);
-    mcorFinal_X = (msPoint_X) * ratio_w;
+    if(msPoint_X > Margin && msPoint_Y > Margin && msPoint_X < (frame.cols - Margin) && msPoint_Y < (frame.rows - Margin)) {
+        float ratio_w = float(xScreenWidth) / float(frame.cols - (2 * Margin));
+        mcorFinal_X = (msPoint_X - Margin) * ratio_w;
 
-    float ratio_h = float(xScreenHeight) / float(frame.rows);
-    mcorFinal_Y = (msPoint_Y) * ratio_h;
+        float ratio_h = float(xScreenHeight) / float(frame.rows - (2 * Margin));
+        mcorFinal_Y = (msPoint_Y - Margin) * ratio_h;
+    }
 }
 
 void ishara::on_btnStartStop_clicked() {

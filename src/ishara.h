@@ -47,6 +47,7 @@ private:
     int msPoint_Y;
     int xScreenHeight;
     int xScreenWidth;
+    int Margin;
     int startEmulation;
     int tmpX;
     int tmpY;
@@ -85,7 +86,7 @@ public slots:
     void startStop();
     void camOpen();
     void processFrameAndUpdateGUI();
-    void trackObject(cv::Mat*, int*, int*);
+    int trackObject(cv::Mat*, int*, int*);
     void getxScreenSize();
     void mouseMap();
     void project();
