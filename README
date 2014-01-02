@@ -31,15 +31,6 @@ Once you have setup the dependencies, download the source,
 $ cd ~/Downloads
 $ git clone https://github.com/saikatbsk/Ishara.git
 
-Move to the directory Ishara, and run configure.
-
-$ cd Ishara
-$ chmod u+x configure
-$ ./configure
-
-Move to directory build and run make.
-
-$ cd build
-$ make
+<to be updated>
 
 Live long and may the force be with you ;)
