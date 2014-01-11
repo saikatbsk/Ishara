@@ -14,7 +14,34 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 
+
 ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
+
+    /**
+     * Init system tray
+     */
+     minimizeAction = new QAction(tr("&Hide"), this);
+     connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+
+     maximizeAction = new QAction(tr("&Show"), this);
+     connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+
+     quitAction = new QAction(tr("&Quit"), this);
+     connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
+
+     trayIconMenu = new QMenu(this);
+     trayIconMenu->addAction(minimizeAction);
+     trayIconMenu->addAction(maximizeAction);
+     trayIconMenu->addSeparator();
+     trayIconMenu->addAction(quitAction);
+
+     trayIcon = new QSystemTrayIcon(this);
+     trayIcon->setContextMenu(trayIconMenu);
+
+     const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
+     trayIcon->setIcon(*icon);
+
+     trayIcon->setVisible(true);
     /**
      * Initializing some variables from the configuration file.
      */

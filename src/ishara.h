@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
+#include <QSystemTrayIcon>
+#include <QAction>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -30,6 +32,12 @@ private:
 
     QTimer *timer;
     QPixmap imgDisplay;
+
+    QAction *minimizeAction;
+    QAction *maximizeAction;
+    QAction *quitAction;
+    QMenu *trayIconMenu;
+    QSystemTrayIcon *trayIcon;
 
     cv::Mat src;
     cv::Mat frame;

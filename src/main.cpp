@@ -3,6 +3,9 @@
 #include <iostream>
 #include <getopt.h>
 
+#include <QSystemTrayIcon>
+#include <QDebug>
+
 int main(int argc, char *argv[]) {
     int opt;
 
@@ -20,6 +23,12 @@ int main(int argc, char *argv[]) {
     }
 
     QApplication a(argc, argv);
+
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+	//qDebug() << "Yay! found system tray!";
+	QApplication::setQuitOnLastWindowClosed(false);
+    }
+
     ishara w;
     w.show();
 
