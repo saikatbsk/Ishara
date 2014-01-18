@@ -36,6 +36,7 @@ private:
     QAction *minimizeAction;
     QAction *maximizeAction;
     QAction *quitAction;
+    QAction *startStopAction;
     QMenu *trayIconMenu;
     QSystemTrayIcon *trayIcon;
 

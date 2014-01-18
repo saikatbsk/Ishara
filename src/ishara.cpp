@@ -17,31 +17,38 @@
 
 ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
+     if (QSystemTrayIcon::isSystemTrayAvailable()) {
     /**
      * Init system tray
      */
-     minimizeAction = new QAction(tr("&Hide"), this);
-     connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
+	minimizeAction = new QAction(tr("&Hide"), this);
+	connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
 
-     maximizeAction = new QAction(tr("&Show"), this);
-     connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+	maximizeAction = new QAction(tr("&Show"), this);
+	connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
 
-     quitAction = new QAction(tr("&Quit"), this);
-     connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
+	quitAction = new QAction(tr("&Quit"), this);
+	connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
 
-     trayIconMenu = new QMenu(this);
-     trayIconMenu->addAction(minimizeAction);
-     trayIconMenu->addAction(maximizeAction);
-     trayIconMenu->addSeparator();
-     trayIconMenu->addAction(quitAction);
+	startStopAction = new QAction(tr("S&tart"), this);
+	connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
 
-     trayIcon = new QSystemTrayIcon(this);
-     trayIcon->setContextMenu(trayIconMenu);
+	trayIconMenu = new QMenu(this);
+	trayIconMenu->addAction(minimizeAction);
+	trayIconMenu->addAction(maximizeAction);
+	trayIconMenu->addSeparator();
+	trayIconMenu->addAction(startStopAction);
+	trayIconMenu->addSeparator();
+	trayIconMenu->addAction(quitAction);
 
-     const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
-     trayIcon->setIcon(*icon);
+	trayIcon = new QSystemTrayIcon(this);
+	trayIcon->setContextMenu(trayIconMenu);
 
-     trayIcon->setVisible(true);
+	const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
+	trayIcon->setIcon(*icon);
+
+	trayIcon->setVisible(true);
+     }
     /**
      * Initializing some variables from the configuration file.
      */
@@ -747,11 +754,17 @@ void ishara::on_actionStart_triggered() {
 void ishara::startStop() {
     if(startEmulation == 0) {
         startEmulation = 1;
+	if (QSystemTrayIcon::isSystemTrayAvailable()) {
+	    startStopAction->setText("S&top");
+	}
         ui->btnStartStop->setText("Stop");
         ui->actionStart->setText("Stop");
     }
     else {
         startEmulation = 0;
+	if (QSystemTrayIcon::isSystemTrayAvailable()) {
+	    startStopAction->setText("S&tart");
+	}
         ui->btnStartStop->setText("Start");
         ui->actionStart->setText("Start");
     }
