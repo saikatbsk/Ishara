@@ -7,6 +7,8 @@
 #include <QDir>
 #include <QTextStream>
 #include <QSystemTrayIcon>
+#include <QHideEvent>
+#include <QShowEvent>
 #include <QAction>
 #include <math.h>
 #include <fcntl.h>
@@ -27,6 +29,10 @@ public:
     ~ishara();
 
 private:
+
+	void hideEvent(QHideEvent *event);
+	void showEvent(QShowEvent *event);
+
     Ui::ishara *ui;
     cv::VideoCapture capture;
 
@@ -139,6 +145,7 @@ private slots:
     void on_chkEnableScroll_stateChanged(int arg1);
     void on_chkEnableLeftClick_stateChanged(int arg1);
     void on_chkEnableRightClick_stateChanged(int arg1);
+	void iconActivated(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // ISHARA_H
