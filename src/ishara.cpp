@@ -21,8 +21,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     /**
      * Init system tray
      */
-	minimizeAction = new QAction(tr("&Hide"), this);
-	connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
 
 	maximizeAction = new QAction(tr("&Show"), this);
 	connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
@@ -34,7 +32,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
 
 	trayIconMenu = new QMenu(this);
-	trayIconMenu->addAction(minimizeAction);
 	trayIconMenu->addAction(maximizeAction);
 	trayIconMenu->addSeparator();
 	trayIconMenu->addAction(startStopAction);
@@ -48,7 +45,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
 	trayIcon->setIcon(*icon);
 
-	trayIcon->setVisible(true);
 	trayIcon->hide();
      }
     /**

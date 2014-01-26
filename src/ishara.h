@@ -39,7 +39,6 @@ private:
     QTimer *timer;
     QPixmap imgDisplay;
 
-    QAction *minimizeAction;
     QAction *maximizeAction;
     QAction *quitAction;
     QAction *startStopAction;
