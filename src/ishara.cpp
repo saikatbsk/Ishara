@@ -805,7 +805,7 @@ void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
 }
 
 void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
-	if( reason == QSystemTrayIcon::MiddleClick) {
+    if( reason == QSystemTrayIcon::DoubleClick) {
 		trayIcon->hide();
 		show();
 	}
