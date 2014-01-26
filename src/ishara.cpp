@@ -25,7 +25,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
 
 	maximizeAction = new QAction(tr("&Show"), this);
-	connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+	connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
 
 	quitAction = new QAction(tr("&Quit"), this);
 	connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
