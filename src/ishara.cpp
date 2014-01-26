@@ -44,10 +44,12 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setContextMenu(trayIconMenu);
 
+	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 	const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
 	trayIcon->setIcon(*icon);
 
 	trayIcon->setVisible(true);
+	trayIcon->hide();
      }
     /**
      * Initializing some variables from the configuration file.
@@ -800,4 +802,21 @@ void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
 
 void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
     cfgRClick = arg1;
+}
+
+void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+	if( reason == QSystemTrayIcon::MiddleClick) {
+		trayIcon->hide();
+		show();
+	}
+}
+
+void ishara::hideEvent(QHideEvent *event) {
+	trayIcon->show();
+	event->accept();
+}
+
+void ishara::showEvent(QShowEvent *event) {
+	trayIcon->hide();
+	event->accept();
 }
