@@ -369,10 +369,9 @@ void ishara::processFrameAndUpdateGUI() {
     cv::cvtColor(frame, frame, CV_BGR2RGB);
 
     /**
-     * Converting the image to HSV and applying Gaussian Blur filter to reduce some noise.
+     * Converting the image to HSV.
      */
     cv::cvtColor(frame, imgHSV, CV_BGR2HSV);
-    cv::GaussianBlur(imgHSV, imgHSV, cv::Size(11, 11), 0);
 
     /**
      * Identifying the color markers used in the index finger.
@@ -381,6 +380,7 @@ void ishara::processFrameAndUpdateGUI() {
                 cv::Scalar(hMin1, sMin1, vMin1),
                 cv::Scalar(hMax1, sMax1, vMax1),
                 imgThresh1);
+    openingOperation(&imgThresh1);
     trackObject(&imgThresh1, &pos_x1, &pos_y1);
 
     /**
@@ -390,6 +390,7 @@ void ishara::processFrameAndUpdateGUI() {
                 cv::Scalar(hMin2, sMin2, vMin2),
                 cv::Scalar(hMax2, sMax2, vMax2),
                 imgThresh2);
+    openingOperation(&imgThresh2);
     trackObject(&imgThresh2, &pos_x2, &pos_y2);
 
     /**
@@ -510,6 +511,11 @@ void ishara::processFrameAndUpdateGUI() {
      */
     imgThresh1.release();
     imgThresh2.release();
+}
+
+void ishara::openingOperation(cv::Mat *image) {
+    cv::erode(*image, *image, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);
+    cv::dilate(*image, *image, cv::Mat(), cv::Point(-1, -1), 2, 1, 1);
 }
 
 int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
