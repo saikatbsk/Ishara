@@ -106,6 +106,7 @@ public slots:
     void project();
     void preClick(int*, int*);
     void scrollInit(int*, int*);
+    void openingOperation(cv::Mat*);
 
 private slots:
     void on_btnStartStop_clicked();
