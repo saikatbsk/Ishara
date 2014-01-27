@@ -14,6 +14,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 
+#include <QDebug>
 
 ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
@@ -49,62 +50,30 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
      }
     /**
      * Initializing some variables from the configuration file.
-     */
-    QString f = QDir::homePath() + QDir::separator() + ".ishara";
+	 */
+	settings.sync();
 
-    QFile conf(f);
-    if(conf.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&conf);
-        for(linecount = 0 ; linecount < 18 ; ++linecount) {
-            QString line = in.readLine();
-            storedval[linecount] = line.toInt();
-        }
+	hMin1 = settings.value("hMin1", 0).toInt();
+	hMax1 = settings.value("hMax1", 179).toInt();
+	sMin1 = settings.value("sMin1", 0).toInt();
+	sMax1 = settings.value("sMax1", 255).toInt();
+	vMin1 = settings.value("vMin1", 0).toInt();
+	vMax1 = settings.value("vMax1", 255).toInt();
 
-        hMin1 = storedval[0];
-        hMax1 = storedval[1];
-        sMin1 = storedval[2];
-        sMax1 = storedval[3];
-        vMin1 = storedval[4];
-        vMax1 = storedval[5];
+	hMin2 = settings.value("hMin2", 0).toInt();
+	hMax2 = settings.value("hMax2", 179).toInt();
+	sMin2 = settings.value("sMin2", 0).toInt();
+	sMax2 = settings.value("sMax2", 255).toInt();
+	vMin2 = settings.value("vMin2", 0).toInt();
+	vMax2 = settings.value("vMax2", 255).toInt();
 
-        hMin2 = storedval[6];
-        hMax2 = storedval[7];
-        sMin2 = storedval[8];
-        sMax2 = storedval[9];
-        vMin2 = storedval[10];
-        vMax2 = storedval[11];
+	pinchR = settings.value("pinchR", 66).toInt();
+	rightClkCount = settings.value("rightClkCount", 20).toInt();
+	smoothFac = settings.value("smoothFac", 8).toInt();
 
-        pinchR = storedval[12];
-        rightClkCount = storedval[13];
-        smoothFac = storedval[14];
-
-        cfgScroll = storedval[15];
-        cfgLClick = storedval[16];
-        cfgRClick = storedval[17];
-    }
-    else {
-        hMin1 = 0;
-        hMax1 = 179;
-        sMin1 = 0;
-        sMax1 = 255;
-        vMin1 = 0;
-        vMax1 = 255;
-
-        hMin2 = 0;
-        hMax2 = 179;
-        sMin2 = 0;
-        sMax2 = 255;
-        vMin2 = 0;
-        vMax2 = 255;
-
-        pinchR = 66;
-        rightClkCount = 20;
-        smoothFac = 8;
-
-        cfgScroll = 2;
-        cfgLClick = 2;
-        cfgRClick = 2;
-    }
+	cfgScroll = settings.value("cfgScroll", 2).toInt();
+	cfgLClick = settings.value("cfgLClick", 2).toInt();
+	cfgRClick = settings.value("cfgRClick", 2).toInt();
 
     /**
      * Initializing some more variables.
@@ -299,38 +268,51 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 }
 
 ishara::~ishara() {
-    delete ui;
 
-    QString f = QDir::homePath() + QDir::separator() + ".ishara";
+	hMin1 = ui->sliderHMin1->value();
+    hMax1 = ui->sliderHMax1->value();
+    sMin1 = ui->sliderSMin1->value();
+    sMax1 = ui->sliderSMax1->value();
+    vMin1 = ui->sliderVMin1->value();
+    vMax1 = ui->sliderVMax1->value();
 
-    QFile conf(f);
-    if(!conf.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        std::cout << f.toStdString();
-        return;
-    }
+    hMin2 = ui->sliderHMin2->value();
+    hMax2 = ui->sliderHMax2->value();
+    sMin2 = ui->sliderSMin2->value();
+    sMax2 = ui->sliderSMax2->value();
+    vMin2 = ui->sliderVMin2->value();
+    vMax2 = ui->sliderVMax2->value();
 
-    QTextStream out(&conf);
-    out << QString::number(hMin1) + "\n" +
-           QString::number(hMax1) + "\n" +
-           QString::number(sMin1) + "\n" +
-           QString::number(sMax1) + "\n" +
-           QString::number(vMin1) + "\n" +
-           QString::number(vMax1) + "\n" +
+	smoothFac = ui->sliderSmoothFac->value();
+    pinchR = ui->sliderPinchR->value();
+    rightClkCount = ui->sliderRCRC->value();
 
-           QString::number(hMin2) + "\n" +
-           QString::number(hMax2) + "\n" +
-           QString::number(sMin2) + "\n" +
-           QString::number(sMax2) + "\n" +
-           QString::number(vMin2) + "\n" +
-           QString::number(vMax2) + "\n" +
 
-           QString::number(pinchR) + "\n" +
-           QString::number(rightClkCount) + "\n" +
-           QString::number(smoothFac) + "\n" +
+	delete ui;
 
-           QString::number(cfgScroll) + "\n" +
-           QString::number(cfgLClick) + "\n" +
-           QString::number(cfgRClick) + "\n";
+	settings.setValue("hMin1", hMin1);
+	settings.setValue("hMax1", hMax1);
+	settings.setValue("sMin1", sMin1);
+	settings.setValue("sMax1", sMax1);
+	settings.setValue("vMin1", vMin1);
+	settings.setValue("vMax1", vMax1);
+
+	settings.setValue("hMin2", hMin2);
+	settings.setValue("hMax2", hMax2);
+	settings.setValue("sMin2", sMin2);
+	settings.setValue("sMax2", sMax2);
+	settings.setValue("vMin2", vMin2);
+	settings.setValue("vMax2", vMax2);
+
+	settings.setValue("pinchR", pinchR);
+	settings.setValue("rightClkCount", rightClkCount);
+	settings.setValue("smoothFac", smoothFac);
+
+	settings.setValue("cfgScroll", cfgScroll);
+	settings.setValue("cfgLClick", cfgLClick);
+	settings.setValue("cfgRClick", cfgRClick);
+
+	settings.sync();
 }
 
 void ishara::processFrameAndUpdateGUI() {
