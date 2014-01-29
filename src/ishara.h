@@ -10,6 +10,7 @@
 #include <QHideEvent>
 #include <QShowEvent>
 #include <QAction>
+#include <QSettings>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -95,6 +96,7 @@ private:
     int cfgLClick;
     int cfgRClick;
     int devSelActive;
+	QSettings settings;
 
 public slots:
     void startStop();
