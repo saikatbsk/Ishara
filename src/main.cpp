@@ -24,6 +24,9 @@ int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
+	QApplication::setOrganizationName("Ishara");
+	QApplication::setApplicationName("Ishara");
+
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
 	//qDebug() << "Yay! found system tray!";
 	QApplication::setQuitOnLastWindowClosed(false);
