@@ -68,7 +68,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	vMax2 = settings.value("vMax2", 255).toInt();
 
 	pinchR = settings.value("pinchR", 66).toInt();
-	rightClkCount = settings.value("rightClkCount", 20).toInt();
+    rightClickDealy = settings.value("rightClickDealy", 20).toInt();
+    doubleClickDealy = settings.value("doubleClickDelay", 6).toInt();
 	smoothFac = settings.value("smoothFac", 8).toInt();
 
 	cfgScroll = settings.value("cfgScroll", 2).toInt();
@@ -186,16 +187,23 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     ui->spnPinchR->setValue(pinchR);
 
     /**
-     * Setting up rightClkCount slider. The variable rightClkCount
-     * determines the loop count while determining a right click.
+     * Setting up rightClickDealy and doubleClickDealy slider. The variables rightClickDealy
+     * and doubleClickDealy determines the loop count while determining a right click and
+     * a double click respectively.
      */
     ui->sliderRCRC->setRange(10, 30);
-    ui->sliderRCRC->setValue(rightClkCount);
+    ui->sliderRCRC->setValue(rightClickDealy);
+
+    ui->sliderDCRC->setRange(4, 20);
+    ui->sliderDCRC->setValue(doubleClickDealy);
     /**
-     * Setting up rightClkCount spinbox, the usage is obvious.
+     * Setting up rightClickDealy and doubleClickDealy spinbox, the usage is obvious.
      */
     ui->spnRCRC->setRange(10, 30);
-    ui->spnRCRC->setValue(rightClkCount);
+    ui->spnRCRC->setValue(rightClickDealy);
+
+    ui->spnDCRC->setRange(4, 20);
+    ui->spnDCRC->setValue(doubleClickDealy);
 
     /**
      * Setting up check boxes to enable/disable functionalities.
@@ -285,7 +293,8 @@ ishara::~ishara() {
 
 	smoothFac = ui->sliderSmoothFac->value();
     pinchR = ui->sliderPinchR->value();
-    rightClkCount = ui->sliderRCRC->value();
+    rightClickDealy = ui->sliderRCRC->value();
+    doubleClickDealy = ui->sliderDCRC->value();
 
 
 	delete ui;
@@ -305,7 +314,8 @@ ishara::~ishara() {
 	settings.setValue("vMax2", vMax2);
 
 	settings.setValue("pinchR", pinchR);
-	settings.setValue("rightClkCount", rightClkCount);
+    settings.setValue("rightClickDealy", rightClickDealy);
+    settings.setValue("doubleClickDelay", doubleClickDealy);
 	settings.setValue("smoothFac", smoothFac);
 
 	settings.setValue("cfgScroll", cfgScroll);
@@ -340,7 +350,8 @@ void ishara::processFrameAndUpdateGUI() {
 
     smoothFac = ui->sliderSmoothFac->value();
     pinchR = ui->sliderPinchR->value();
-    rightClkCount = ui->sliderRCRC->value();
+    rightClickDealy = ui->sliderRCRC->value();
+    doubleClickDealy = ui->sliderDCRC->value();
 
     capture.read(src);
 
@@ -419,9 +430,22 @@ void ishara::processFrameAndUpdateGUI() {
                  * Right click.
                  */
                 if(ui->chkEnableRightClick->isChecked() == true) {
-                    if(waitCount == rightClkCount && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
+                    if(waitCount == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
                         XTestFakeButtonEvent(display, 3, 1, 1);
                         XTestFakeButtonEvent(display, 3, 0, 1);
+                        tmpX = 0;
+                        tmpY = 0;
+                        waitCount = 0;
+                    }
+                    /**
+                     * Double click.
+                     */
+                    else if(waitCount == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
+                        XTestFakeButtonEvent(display, 1, 1, 1);
+                        XTestFakeButtonEvent(display, 1, 0, 1);
+                        sleep(1);
+                        XTestFakeButtonEvent(display, 1, 1, 1);
+                        XTestFakeButtonEvent(display, 1, 0, 1);
                         tmpX = 0;
                         tmpY = 0;
                         waitCount = 0;
@@ -610,6 +634,74 @@ void::ishara::scrollInit(int *x, int *y) {
         ifScrollDwn = 0;
 }
 
+void ishara::startStop() {
+    if(startEmulation == 0) {
+        startEmulation = 1;
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        startStopAction->setText("S&top");
+    }
+        ui->btnStartStop->setText("Stop");
+        ui->actionStart->setText("Stop");
+    }
+    else {
+        startEmulation = 0;
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        startStopAction->setText("S&tart");
+    }
+        ui->btnStartStop->setText("Start");
+        ui->actionStart->setText("Start");
+    }
+}
+
+void ishara::on_comboSelectCam_currentIndexChanged(int index)
+{
+    if(devSelActive == 0) {
+        devSelActive = 1;
+    }
+    else {
+        CAM_INDEX = index;
+        capture.release();
+        camOpen();
+    }
+}
+
+void ishara::camOpen() {
+    capture.open(CAM_INDEX);
+    if(capture.isOpened() == false) {
+        ui->statusBar->showMessage("Error opening camera!");
+        return;
+    }
+}
+
+void ishara::on_chkEnableScroll_stateChanged(int arg1) {
+    cfgScroll = arg1;
+}
+
+void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
+    cfgLClick = arg1;
+}
+
+void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
+    cfgRClick = arg1;
+}
+
+void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+    if( reason == QSystemTrayIcon::DoubleClick) {
+        trayIcon->hide();
+        show();
+    }
+}
+
+void ishara::hideEvent(QHideEvent *event) {
+    trayIcon->show();
+    event->accept();
+}
+
+void ishara::showEvent(QShowEvent *event) {
+    trayIcon->hide();
+    event->accept();
+}
+
 void ishara::on_spnHMin1_valueChanged(int arg1) {
     ui->sliderHMin1->setValue(arg1);
 }
@@ -722,6 +814,14 @@ void ishara::on_spnRCRC_valueChanged(int arg1) {
     ui->sliderRCRC->setValue(arg1);
 }
 
+void ishara::on_sliderDCRC_valueChanged(int value) {
+    ui->spnDCRC->setValue(value);
+}
+
+void ishara::on_spnDCRC_valueChanged(int arg1) {
+    ui->sliderDCRC->setValue(arg1);
+}
+
 void ishara::on_actionQuit_triggered() {
     QApplication::quit();
 }
@@ -735,72 +835,4 @@ int ishara::on_actionAbout_triggered() {
 
 void ishara::on_actionStart_triggered() {
     startStop();
-}
-
-void ishara::startStop() {
-    if(startEmulation == 0) {
-        startEmulation = 1;
-	if (QSystemTrayIcon::isSystemTrayAvailable()) {
-	    startStopAction->setText("S&top");
-	}
-        ui->btnStartStop->setText("Stop");
-        ui->actionStart->setText("Stop");
-    }
-    else {
-        startEmulation = 0;
-	if (QSystemTrayIcon::isSystemTrayAvailable()) {
-	    startStopAction->setText("S&tart");
-	}
-        ui->btnStartStop->setText("Start");
-        ui->actionStart->setText("Start");
-    }
-}
-
-void ishara::on_comboSelectCam_currentIndexChanged(int index)
-{
-    if(devSelActive == 0) {
-        devSelActive = 1;
-    }
-    else {
-        CAM_INDEX = index;
-        capture.release();
-        camOpen();
-    }
-}
-
-void ishara::camOpen() {
-    capture.open(CAM_INDEX);
-    if(capture.isOpened() == false) {
-        ui->statusBar->showMessage("Error opening camera!");
-        return;
-    }
-}
-
-void ishara::on_chkEnableScroll_stateChanged(int arg1) {
-    cfgScroll = arg1;
-}
-
-void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
-    cfgLClick = arg1;
-}
-
-void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
-    cfgRClick = arg1;
-}
-
-void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
-    if( reason == QSystemTrayIcon::DoubleClick) {
-		trayIcon->hide();
-		show();
-	}
-}
-
-void ishara::hideEvent(QHideEvent *event) {
-	trayIcon->show();
-	event->accept();
-}
-
-void ishara::showEvent(QShowEvent *event) {
-	trayIcon->hide();
-	event->accept();
 }

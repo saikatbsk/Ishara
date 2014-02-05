@@ -11,6 +11,7 @@
 #include <QShowEvent>
 #include <QAction>
 #include <QSettings>
+#include <unistd.h>
 #include <math.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -67,7 +68,8 @@ private:
     int tmpX;
     int tmpY;
     int waitCount;
-    int rightClkCount;
+    int rightClickDealy;
+    int doubleClickDealy;
     int smoothFac;
     int pinch;
     int pinchR;
@@ -141,6 +143,8 @@ private slots:
     void on_spnPinchR_valueChanged(int arg1);
     void on_sliderRCRC_valueChanged(int value);
     void on_spnRCRC_valueChanged(int arg1);
+    void on_sliderDCRC_valueChanged(int value);
+    void on_spnDCRC_valueChanged(int arg1);
     void on_actionQuit_triggered();
     int on_actionAbout_triggered();
     void on_actionStart_triggered();
