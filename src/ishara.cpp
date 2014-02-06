@@ -75,6 +75,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 	cfgScroll = settings.value("cfgScroll", 2).toInt();
 	cfgLClick = settings.value("cfgLClick", 2).toInt();
 	cfgRClick = settings.value("cfgRClick", 2).toInt();
+    cfgDClick = settings.value("cfgDClick", 2).toInt();
 
     /**
      * Initializing some more variables.
@@ -229,6 +230,13 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
         ui->chkEnableRightClick->setChecked(false);
     }
 
+    if(cfgDClick > 0) {
+        ui->chkEnableDoubleClick->setChecked(true);
+    }
+    else {
+        ui->chkEnableDoubleClick->setChecked(false);
+    }
+
     /**
      * Camera selection in Linux.
      */
@@ -321,6 +329,7 @@ ishara::~ishara() {
 	settings.setValue("cfgScroll", cfgScroll);
 	settings.setValue("cfgLClick", cfgLClick);
 	settings.setValue("cfgRClick", cfgRClick);
+    settings.setValue("cfgDClick", cfgDClick);
 
 	settings.sync();
 }
@@ -440,15 +449,17 @@ void ishara::processFrameAndUpdateGUI() {
                     /**
                      * Double click.
                      */
-                    else if(waitCount == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
-                        XTestFakeButtonEvent(display, 1, 1, 1);
-                        XTestFakeButtonEvent(display, 1, 0, 1);
-                        sleep(1);
-                        XTestFakeButtonEvent(display, 1, 1, 1);
-                        XTestFakeButtonEvent(display, 1, 0, 1);
-                        tmpX = 0;
-                        tmpY = 0;
-                        waitCount = 0;
+                    else if(ui->chkEnableDoubleClick->isChecked() == true) {
+                        if(waitCount == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
+                            XTestFakeButtonEvent(display, 1, 1, 1);
+                            XTestFakeButtonEvent(display, 1, 0, 1);
+                            sleep(1);
+                            XTestFakeButtonEvent(display, 1, 1, 1);
+                            XTestFakeButtonEvent(display, 1, 0, 1);
+                            tmpX = 0;
+                            tmpY = 0;
+                            waitCount = 0;
+                        }
                     }
                 }
 
@@ -683,6 +694,10 @@ void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
 
 void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
     cfgRClick = arg1;
+}
+
+void ishara::on_chkEnableDoubleClick_stateChanged(int arg1) {
+    cfgDClick = arg1;
 }
 
 void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {

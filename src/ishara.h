@@ -97,6 +97,7 @@ private:
     int cfgScroll;
     int cfgLClick;
     int cfgRClick;
+    int cfgDClick;
     int devSelActive;
 	QSettings settings;
 
@@ -151,6 +152,7 @@ private slots:
     void on_chkEnableScroll_stateChanged(int arg1);
     void on_chkEnableLeftClick_stateChanged(int arg1);
     void on_chkEnableRightClick_stateChanged(int arg1);
+    void on_chkEnableDoubleClick_stateChanged(int arg1);
 	void iconActivated(QSystemTrayIcon::ActivationReason reason);
 };
 
