@@ -2,9 +2,10 @@
 project(ishara)
 
 cmake_minimum_required(VERSION 2.8)
+set(QT_MIN_VERSION "5.2.0")
 
 # Find required packages
-find_package(Qt4 REQUIRED)
+find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Widgets Test UiTools)
 find_package(X11 REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -22,8 +23,6 @@ include_directories(
 
 # Required definitions
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
 
 # Setup source files
 
@@ -47,9 +46,9 @@ set ( ishara_RESOURCES
 	src/res.qrc
     )
 
-qt4_wrap_ui(ishara_FORMS_HEADERS ${ishara_FORMS})
-qt4_add_resources(ishara_RESOURCES_RCC ${ishara_RESOURCES})
-qt4_wrap_cpp(ishara_HEADERS_MOC ${ishara_HEADERS})
+qt5_wrap_ui(ishara_FORMS_HEADERS ${ishara_FORMS})
+qt5_add_resources(ishara_RESOURCES_RCC ${ishara_RESOURCES})
+qt5_wrap_cpp(ishara_HEADERS_MOC ${ishara_HEADERS})
 
 add_executable (ishara 
 	${ishara_SOURCES}
@@ -61,7 +60,7 @@ add_executable (ishara
 # Link stuffs
 
 target_link_libraries (ishara 
-	${QT_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
 	${X11_LIBRARIES}
 	${OpenCV_LIBRARIES}
 	${XTest_LIBRARIES}
