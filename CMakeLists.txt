@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 set(QT_MIN_VERSION "5.2.0")
 
 # Find required packages
-find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Widgets Test UiTools)
+find_package(Qt5 CONFIG REQUIRED COMPONENTS Widgets)
 find_package(X11 REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -60,7 +60,7 @@ add_executable (ishara
 # Link stuffs
 
 target_link_libraries (ishara 
-    ${Qt5Widgets_LIBRARIES}
+    Qt5::Widgets
 	${X11_LIBRARIES}
 	${OpenCV_LIBRARIES}
 	${XTest_LIBRARIES}
