@@ -9,7 +9,7 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS Widgets)
 find_package(X11 REQUIRED)
 find_package(OpenCV REQUIRED)
 
-# Pkg config stuff for libraries that do not provide find modules, (XTest and OpenCV)
+# Pkg config stuff for libraries that do not provide find modules, (XTest)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(XTest xtst)
