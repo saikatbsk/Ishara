@@ -12,7 +12,7 @@ drag-n-drop and such.
 It is developed using OpenCV and Qt and written in C++. The initial prototype
 runs on Linux. There is no Mac or Windows version yet.
 
-See LICENSE.txt, there you'll find all the legal stuff.
+See LICENSE.txt to find all the legal stuff.
 
 
 How to compile:
