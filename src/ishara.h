@@ -1,7 +1,7 @@
 #ifndef ISHARA_H
 #define ISHARA_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QTimer>
 #include <QFile>
 #include <QDir>
