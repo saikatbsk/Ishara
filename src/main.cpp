@@ -1,8 +1,5 @@
 #include "ishara.h"
 #include <QApplication>
-#include <iostream>
-#include <getopt.h>
-
 #include <QSystemTrayIcon>
 #include <QDebug>
 
@@ -28,8 +25,7 @@ int main(int argc, char *argv[]) {
 	QApplication::setApplicationName("Ishara");
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
-	//qDebug() << "Yay! found system tray!";
-	QApplication::setQuitOnLastWindowClosed(false);
+        QApplication::setQuitOnLastWindowClosed(false);
     }
 
     ishara w;

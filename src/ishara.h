@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QDateTime>
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
@@ -15,6 +16,8 @@
 #include <math.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <iostream>
+#include <getopt.h>
 #include <linux/videodev2.h>
 #include <opencv2/opencv.hpp>
 #include "aboutdialog.h"
@@ -46,12 +49,16 @@ private:
     QAction *startStopAction;
     QMenu *trayIconMenu;
     QSystemTrayIcon *trayIcon;
+    QSettings settings;
 
     cv::Mat src;
     cv::Mat frame;
     cv::Mat imgHSV;
+    cv::Mat imgThresh1;
+    cv::Mat imgThresh2;
 
     struct v4l2_capability vidiocap;
+    int iteration;
     int deviceIndex;
     int fd;
     int CAM_INDEX;
@@ -63,11 +70,11 @@ private:
     int msPoint_Y;
     int xScreenHeight;
     int xScreenWidth;
-    int Margin;
     int startEmulation;
     int tmpX;
     int tmpY;
-    int waitCount;
+    int waitCountRC;
+    int waitCountDC;
     int rightClickDealy;
     int doubleClickDealy;
     int smoothFac;
@@ -89,6 +96,8 @@ private:
     int sMax2;
     int vMin2;
     int vMax2;
+    int marker1;
+    int marker2;
     int linecount;
     int storedval[18];
     bool statusScroll;
@@ -99,7 +108,12 @@ private:
     int cfgRClick;
     int cfgDClick;
     int devSelActive;
-	QSettings settings;
+    int pre_x;
+    int pre_y;
+    int dx;
+    int dy;
+    int motionEnable;
+    char *suf_buffer;
 
 public slots:
     void startStop();
@@ -108,10 +122,10 @@ public slots:
     int trackObject(cv::Mat*, int*, int*);
     void getxScreenSize();
     void mouseMap();
-    void project();
     void preClick(int*, int*);
     void scrollInit(int*, int*);
     void openingOperation(cv::Mat*);
+    void namedImage();
 
 private slots:
     void on_btnStartStop_clicked();
@@ -154,6 +168,9 @@ private slots:
     void on_chkEnableRightClick_stateChanged(int arg1);
     void on_chkEnableDoubleClick_stateChanged(int arg1);
 	void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void on_actionOriginal_triggered();
+    void on_actionThresh_1_triggered();
+    void on_actionThresh_2_triggered();
 };
 
 #endif // ISHARA_H

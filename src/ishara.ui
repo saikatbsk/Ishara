@@ -891,8 +891,23 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuImage">
+    <property name="title">
+     <string>&amp;Image</string>
+    </property>
+    <widget class="QMenu" name="menuGrab_Frame">
+     <property name="title">
+      <string>Grab Frame</string>
+     </property>
+     <addaction name="actionOriginal"/>
+     <addaction name="actionThresh_1"/>
+     <addaction name="actionThresh_2"/>
+    </widget>
+    <addaction name="menuGrab_Frame"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuImage"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuit">
@@ -917,6 +932,30 @@
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionOriginal">
+   <property name="text">
+    <string>Original</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
+   </property>
+  </action>
+  <action name="actionThresh_1">
+   <property name="text">
+    <string>Thresh 1</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+T</string>
+   </property>
+  </action>
+  <action name="actionThresh_2">
+   <property name="text">
+    <string>Thresh 2</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Y</string>
    </property>
   </action>
  </widget>

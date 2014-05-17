@@ -1,4 +1,4 @@
-/**
+/*
  * *** *** Nothing but some lame decoration ** ***
  *
  * Filename    : ishara.cpp
@@ -13,72 +13,68 @@
 #include "ui_ishara.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
-
 #include <QDebug>
 
 ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
-     if (QSystemTrayIcon::isSystemTrayAvailable()) {
-    /**
-     * Init system tray
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        /*
+         * init system tray
+         */
+        maximizeAction = new QAction(tr("&Show"), this);
+        connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
+        quitAction = new QAction(tr("&Quit"), this);
+        connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
+
+        startStopAction = new QAction(tr("S&tart"), this);
+        connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
+
+        trayIconMenu = new QMenu(this);
+        trayIconMenu->addAction(maximizeAction);
+        trayIconMenu->addSeparator();
+        trayIconMenu->addAction(startStopAction);
+        trayIconMenu->addSeparator();
+        trayIconMenu->addAction(quitAction);
+        trayIcon = new QSystemTrayIcon(this);
+        trayIcon->setContextMenu(trayIconMenu);
+
+        connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+        const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
+        trayIcon->setIcon(*icon);
+        trayIcon->hide();
+    }
+
+    /*
+     * initializing some variables from the configuration file
      */
+    settings.sync();
 
-	maximizeAction = new QAction(tr("&Show"), this);
-	connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
+    hMin1 = settings.value("hMin1", 0).toInt();
+    hMax1 = settings.value("hMax1", 179).toInt();
+    sMin1 = settings.value("sMin1", 0).toInt();
+    sMax1 = settings.value("sMax1", 255).toInt();
+    vMin1 = settings.value("vMin1", 0).toInt();
+    vMax1 = settings.value("vMax1", 255).toInt();
 
-	quitAction = new QAction(tr("&Quit"), this);
-	connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
+    hMin2 = settings.value("hMin2", 0).toInt();
+    hMax2 = settings.value("hMax2", 179).toInt();
+    sMin2 = settings.value("sMin2", 0).toInt();
+    sMax2 = settings.value("sMax2", 255).toInt();
+    vMin2 = settings.value("vMin2", 0).toInt();
+    vMax2 = settings.value("vMax2", 255).toInt();
 
-	startStopAction = new QAction(tr("S&tart"), this);
-	connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
-
-	trayIconMenu = new QMenu(this);
-	trayIconMenu->addAction(maximizeAction);
-	trayIconMenu->addSeparator();
-	trayIconMenu->addAction(startStopAction);
-	trayIconMenu->addSeparator();
-	trayIconMenu->addAction(quitAction);
-
-	trayIcon = new QSystemTrayIcon(this);
-	trayIcon->setContextMenu(trayIconMenu);
-
-	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-	const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
-	trayIcon->setIcon(*icon);
-
-	trayIcon->hide();
-     }
-    /**
-     * Initializing some variables from the configuration file.
-	 */
-	settings.sync();
-
-	hMin1 = settings.value("hMin1", 0).toInt();
-	hMax1 = settings.value("hMax1", 179).toInt();
-	sMin1 = settings.value("sMin1", 0).toInt();
-	sMax1 = settings.value("sMax1", 255).toInt();
-	vMin1 = settings.value("vMin1", 0).toInt();
-	vMax1 = settings.value("vMax1", 255).toInt();
-
-	hMin2 = settings.value("hMin2", 0).toInt();
-	hMax2 = settings.value("hMax2", 179).toInt();
-	sMin2 = settings.value("sMin2", 0).toInt();
-	sMax2 = settings.value("sMax2", 255).toInt();
-	vMin2 = settings.value("vMin2", 0).toInt();
-	vMax2 = settings.value("vMax2", 255).toInt();
-
-	pinchR = settings.value("pinchR", 66).toInt();
+    pinchR = settings.value("pinchR", 66).toInt();
     rightClickDealy = settings.value("rightClickDealy", 20).toInt();
     doubleClickDealy = settings.value("doubleClickDelay", 6).toInt();
-	smoothFac = settings.value("smoothFac", 8).toInt();
+    smoothFac = settings.value("smoothFac", 8).toInt();
 
-	cfgScroll = settings.value("cfgScroll", 2).toInt();
-	cfgLClick = settings.value("cfgLClick", 2).toInt();
-	cfgRClick = settings.value("cfgRClick", 2).toInt();
-    cfgDClick = settings.value("cfgDClick", 2).toInt();
+    cfgScroll = settings.value("cfgScroll", 2).toInt();
+    cfgLClick = settings.value("cfgLClick", 2).toInt();
+    cfgRClick = settings.value("cfgRClick", 2).toInt();
+    cfgDClick = settings.value("cfgDClick", 0).toInt();
 
-    /**
-     * Initializing some more variables.
+    /*
+     * initializing some more variables
      */
     CAM_INDEX = -1;
     mcorInit_X = 0;
@@ -87,34 +83,36 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     msPoint_Y = 0;
     xScreenHeight = 0;
     xScreenWidth = 0;
-    Margin = 100;
     startEmulation = 0;
+    motionEnable = 0;
     tmpX = 0;
     tmpY = 0;
-    waitCount = 0;
+    waitCountRC = 0;
+    waitCountDC = 0;
     pinch = 0;
     ifScrollUp = 0;
     ifScrollDwn = 0;
     btnPress = 1;
     btnRel = 1;
     devSelActive = 0;
+    iteration = 0;
 
-    /**
-     * Setting up the user interface.
+    /*
+     * setting up the user interface
      */
     ui->setupUi(this);
 
-    /**
-     * Setting up smoothness factor slider. Smoothness factor is the maximum allowable
+    /*
+     * setting up smoothness factor slider; smoothness factor is the maximum allowable
      * distance the index finger can move without effecting any change in the mouse
-     * cursor position. A reasonable value for this would be 6 to 8 depending on the user.
+     * cursor position; a reasonable value for this would be 6 to 8 depending on the user
      */
     ui->sliderSmoothFac->setRange(2, 12);
     ui->sliderSmoothFac->setValue(smoothFac);
 
-    /**
-     * Setting up color selection sliders. The HSV range for the two color markers to be
-     * detected are set using these sliders.
+    /*
+     * setting up color selection sliders; the HSV range for the two color markers to be
+     * detected are set using these sliders
      */
     ui->sliderHMin1->setRange(0, 179);
     ui->sliderHMax1->setRange(0, 179);
@@ -143,9 +141,10 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     ui->sliderSMax2->setValue(sMax2);
     ui->sliderVMin2->setValue(vMin2);
     ui->sliderVMax2->setValue(vMax2);
-    /**
-     * Setting up color selection spinboxes. The values determining the HSV range can
-     * also be altered using the spin boxes.
+
+    /*
+     * setting up color selection spinboxes; the values determining the HSV range can
+     * also be altered using the spin boxes
      */
     ui->spnHMin1->setRange(0, 179);
     ui->spnHMax1->setRange(0, 179);
@@ -175,30 +174,32 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     ui->spnVMin2->setValue(vMin2);
     ui->spnVMax2->setValue(vMax2);
 
-    /**
-     * Setting up pinchR slider. The pinchR variable determines the maximum distance
-     * between the center co-ordinates of the two color markers when detecting a Pinch.
+    /*
+     * setting up pinchR slider; the pinchR variable determines the maximum distance
+     * between the center co-ordinates of the two color markers when detecting a Pinch
      */
     ui->sliderPinchR->setRange(10, 120);
     ui->sliderPinchR->setValue(pinchR);
-    /**
-     * Setting up pinchR spinbox. The value of pinchR can also be altered using a spinbox.
+
+    /*
+     * setting up pinchR spinbox; the value of pinchR can also be altered using a spinbox
      */
     ui->spnPinchR->setRange(10, 120);
     ui->spnPinchR->setValue(pinchR);
 
-    /**
-     * Setting up rightClickDealy and doubleClickDealy slider. The variables rightClickDealy
+    /*
+     * setting up rightClickDealy and doubleClickDealy slider; the variables rightClickDealy
      * and doubleClickDealy determines the loop count while determining a right click and
-     * a double click respectively.
+     * a double click respectively
      */
     ui->sliderRCRC->setRange(10, 30);
     ui->sliderRCRC->setValue(rightClickDealy);
 
     ui->sliderDCRC->setRange(4, 20);
     ui->sliderDCRC->setValue(doubleClickDealy);
-    /**
-     * Setting up rightClickDealy and doubleClickDealy spinbox, the usage is obvious.
+
+    /*
+     * setting up rightClickDealy and doubleClickDealy spinbox, the usage is obvious
      */
     ui->spnRCRC->setRange(10, 30);
     ui->spnRCRC->setValue(rightClickDealy);
@@ -206,8 +207,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     ui->spnDCRC->setRange(4, 20);
     ui->spnDCRC->setValue(doubleClickDealy);
 
-    /**
-     * Setting up check boxes to enable/disable functionalities.
+    /*
+     * setting up check boxes to enable/disable functionalities
      */
     if(cfgScroll > 0) {
         ui->chkEnableScroll->setChecked(true);
@@ -237,8 +238,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
         ui->chkEnableDoubleClick->setChecked(false);
     }
 
-    /**
-     * Camera selection in Linux.
+    /*
+     * samera selection in Linux
      */
     for(deviceIndex = 0 ; deviceIndex < 64 ; ++deviceIndex) {
         QString device = "/dev/video" + QString::number(deviceIndex);
@@ -257,8 +258,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
         }
     }
 
-    /**
-     * Camera operations.
+    /*
+     * camera operations
      */
     camOpen();
 
@@ -268,15 +269,20 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
         return;
     }
 
-    /**
-     * Time warp.
+    /*
+     * get the screen size
+     */
+    getxScreenSize();
+
+    /*
+     * time warp - make it so
      */
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(processFrameAndUpdateGUI()));
     timer->start(20);
 
-    /**
-     * Clean up the crap.
+    /*
+     * clean up the crap
      */
     src.release();
     frame.release();
@@ -284,8 +290,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 }
 
 ishara::~ishara() {
-
-	hMin1 = ui->sliderHMin1->value();
+    hMin1 = ui->sliderHMin1->value();
     hMax1 = ui->sliderHMax1->value();
     sMin1 = ui->sliderSMin1->value();
     sMax1 = ui->sliderSMax1->value();
@@ -299,45 +304,41 @@ ishara::~ishara() {
     vMin2 = ui->sliderVMin2->value();
     vMax2 = ui->sliderVMax2->value();
 
-	smoothFac = ui->sliderSmoothFac->value();
+    smoothFac = ui->sliderSmoothFac->value();
     pinchR = ui->sliderPinchR->value();
     rightClickDealy = ui->sliderRCRC->value();
     doubleClickDealy = ui->sliderDCRC->value();
 
+    delete ui;
 
-	delete ui;
+    settings.setValue("hMin1", hMin1);
+    settings.setValue("hMax1", hMax1);
+    settings.setValue("sMin1", sMin1);
+    settings.setValue("sMax1", sMax1);
+    settings.setValue("vMin1", vMin1);
+    settings.setValue("vMax1", vMax1);
 
-	settings.setValue("hMin1", hMin1);
-	settings.setValue("hMax1", hMax1);
-	settings.setValue("sMin1", sMin1);
-	settings.setValue("sMax1", sMax1);
-	settings.setValue("vMin1", vMin1);
-	settings.setValue("vMax1", vMax1);
+    settings.setValue("hMin2", hMin2);
+    settings.setValue("hMax2", hMax2);
+    settings.setValue("sMin2", sMin2);
+    settings.setValue("sMax2", sMax2);
+    settings.setValue("vMin2", vMin2);
+    settings.setValue("vMax2", vMax2);
 
-	settings.setValue("hMin2", hMin2);
-	settings.setValue("hMax2", hMax2);
-	settings.setValue("sMin2", sMin2);
-	settings.setValue("sMax2", sMax2);
-	settings.setValue("vMin2", vMin2);
-	settings.setValue("vMax2", vMax2);
-
-	settings.setValue("pinchR", pinchR);
+    settings.setValue("pinchR", pinchR);
     settings.setValue("rightClickDealy", rightClickDealy);
     settings.setValue("doubleClickDelay", doubleClickDealy);
-	settings.setValue("smoothFac", smoothFac);
+    settings.setValue("smoothFac", smoothFac);
 
-	settings.setValue("cfgScroll", cfgScroll);
-	settings.setValue("cfgLClick", cfgLClick);
-	settings.setValue("cfgRClick", cfgRClick);
+    settings.setValue("cfgScroll", cfgScroll);
+    settings.setValue("cfgLClick", cfgLClick);
+    settings.setValue("cfgRClick", cfgRClick);
     settings.setValue("cfgDClick", cfgDClick);
 
-	settings.sync();
+    settings.sync();
 }
 
 void ishara::processFrameAndUpdateGUI() {
-    cv::Mat imgThresh1;
-    cv::Mat imgThresh2;
-
     int pos_x1 = 0;
     int pos_y1 = 0;
     int pos_x2 = 0;
@@ -364,155 +365,175 @@ void ishara::processFrameAndUpdateGUI() {
 
     capture.read(src);
 
-    /**
-     * Flip the initial image and convert to RGB as opencv would read images in BGR format.
+    /*
+     * flip the initial image and convert to RGB as opencv would read images in BGR format
      */
     cv::flip(src, frame, 1);
     cv::cvtColor(frame, frame, CV_BGR2RGB);
 
-    /**
-     * Converting the image to HSV.
+    /*
+     * converting the image to HSV
      */
     cv::cvtColor(frame, imgHSV, CV_BGR2HSV);
 
-    /**
-     * Identifying the color markers used in the index finger.
+    /*
+     * identifying the color markers used in the index finger
      */
     cv::inRange(imgHSV,
                 cv::Scalar(hMin1, sMin1, vMin1),
                 cv::Scalar(hMax1, sMax1, vMax1),
                 imgThresh1);
     openingOperation(&imgThresh1);
-    trackObject(&imgThresh1, &pos_x1, &pos_y1);
+    marker1 = trackObject(&imgThresh1, &pos_x1, &pos_y1);
 
-    /**
-     * Identifying the color markers used in the index thumb.
+    /*
+     * identifying the color markers used in the index thumb
      */
     cv::inRange(imgHSV,
                 cv::Scalar(hMin2, sMin2, vMin2),
                 cv::Scalar(hMax2, sMax2, vMax2),
                 imgThresh2);
     openingOperation(&imgThresh2);
-    trackObject(&imgThresh2, &pos_x2, &pos_y2);
-
-    /**
-     * Draw the effective region.
-     */
-    cv::Rect rec(Margin, Margin, frame.cols - (2 * Margin), frame.rows - (2 * Margin));
-    cv::rectangle(frame, rec, cv::Scalar(0, 0, 255), 1, 8, 0);
-    cv::putText(frame, "Move index finger inside the box.", cv::Point(Margin + 20, Margin + 20), CV_FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 255), 1, 8, false);
+    marker2 = trackObject(&imgThresh2, &pos_x2, &pos_y2);
 
     mcorInit_X = pos_x1;
     mcorInit_Y = pos_y1;
 
-    if(mcorInit_X + mcorInit_Y) {
-        if(startEmulation == 1) {
-            Display *display = XOpenDisplay(0);
-            if(!display) {
-                ui->statusBar->showMessage("Error opening display!");
-                return;
+    if(marker1 && startEmulation) {
+        Display *display = XOpenDisplay(0);
+        if(!display) {
+            ui->statusBar->showMessage("Error opening display!");
+            return;
+        }
+
+        Window root = DefaultRootWindow(display);
+        if(!root) {
+            ui->statusBar->showMessage("Root window not found!");
+            return;
+        }
+
+        /*
+         * map and move mouse pointer on screen
+         */
+        mouseMap();
+
+        if(motionEnable == 0) {
+            pre_x = msPoint_X;
+            pre_y = msPoint_Y;
+
+            motionEnable = 1;
+        }
+        else {
+            dx = msPoint_X - pre_x;
+            dy = msPoint_Y - pre_y;
+
+            mcorFinal_X += dx;
+            mcorFinal_Y += dy;
+
+            if(mcorFinal_X > xScreenWidth)
+                mcorFinal_X = xScreenWidth;
+            if(mcorFinal_Y > xScreenHeight)
+                mcorFinal_Y = xScreenHeight;
+
+            pre_x = msPoint_X;
+            pre_y = msPoint_Y;
+        }
+
+        XTestFakeMotionEvent(display, DefaultScreen(display), mcorFinal_X, mcorFinal_Y, 0);
+
+        if(marker2) {
+            if(tmpX == mcorFinal_X && tmpY == mcorFinal_Y) {
+                ++waitCountRC;
+                ++waitCountDC;
+            }
+            else {
+                tmpX = 0;
+                tmpY = 0;
+                waitCountRC = 0;
+                waitCountDC = 0;
             }
 
-            Window root = DefaultRootWindow(display);
-            if(!root) {
-                ui->statusBar->showMessage("Root window not found!");
-                return;
-            }
-
-            /**
-             * Map and move mouse pointer on screen.
+            /*
+             * right click
              */
-            getxScreenSize();
-            mouseMap();
-            XTestFakeMotionEvent(display, DefaultScreen(display), mcorFinal_X, mcorFinal_Y, 0);
-
-            if(pos_x2 + pos_y2) {
-                if(tmpX == mcorFinal_X && tmpY == mcorFinal_Y)
-                    ++waitCount;
-                else {
+            if(ui->chkEnableRightClick->isChecked() == true) {
+                if(waitCountRC == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
+                    XTestFakeButtonEvent(display, 3, 1, 1);
+                    XTestFakeButtonEvent(display, 3, 0, 1);
                     tmpX = 0;
                     tmpY = 0;
-                    waitCount = 0;
+                    waitCountRC = 0;
                 }
 
-                /**
-                 * Right click.
+                /*
+                 * double click
                  */
-                if(ui->chkEnableRightClick->isChecked() == true) {
-                    if(waitCount == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
-                        XTestFakeButtonEvent(display, 3, 1, 1);
-                        XTestFakeButtonEvent(display, 3, 0, 1);
+                else if(ui->chkEnableDoubleClick->isChecked() == true) {
+                    if(waitCountDC == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
+                        XTestFakeButtonEvent(display, 1, 1, 1);
+                        XTestFakeButtonEvent(display, 1, 0, 1);
+                        sleep(1);
+                        XTestFakeButtonEvent(display, 1, 1, 1);
+                        XTestFakeButtonEvent(display, 1, 0, 1);
                         tmpX = 0;
                         tmpY = 0;
-                        waitCount = 0;
-                    }
-                    /**
-                     * Double click.
-                     */
-                    else if(ui->chkEnableDoubleClick->isChecked() == true) {
-                        if(waitCount == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
-                            XTestFakeButtonEvent(display, 1, 1, 1);
-                            XTestFakeButtonEvent(display, 1, 0, 1);
-                            sleep(1);
-                            XTestFakeButtonEvent(display, 1, 1, 1);
-                            XTestFakeButtonEvent(display, 1, 0, 1);
-                            tmpX = 0;
-                            tmpY = 0;
-                            waitCount = 0;
-                        }
-                    }
-                }
-
-                tmpX = mcorFinal_X;
-                tmpY = mcorFinal_Y;
-
-                preClick(&pos_x2, &pos_y2);
-
-                /**
-                 * Scroll.
-                 */
-                if(ui->chkEnableScroll->isChecked() == true) {
-                    scrollInit(&pos_x2, &pos_y2);
-                    if(ifScrollUp == 1) {
-                        XTestFakeButtonEvent(display, 4, 1, 10);
-                        XTestFakeButtonEvent(display, 4, 0, 10);
-                    }
-                    if(ifScrollDwn == 1) {
-                        XTestFakeButtonEvent(display, 5, 1, 10);
-                        XTestFakeButtonEvent(display, 5, 0, 10);
-                    }
-                }
-
-                /**
-                 * Left click.
-                 */
-                if(ui->chkEnableLeftClick->isChecked() == true) {
-                    cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), pinchR, cv::Scalar(0, 0, 255));
-                    if(pinch == 1) {
-                        if(btnPress == 1) {
-                            XTestFakeButtonEvent(display, 1, 1, 1);
-                            btnPress = 0;
-                            btnRel = 1;
-                        }
-                    }
-                    else{
-                        if(btnRel == 1) {
-                            XTestFakeButtonEvent(display, 1, 0, 1);
-                            btnRel = 0;
-                        }
-                        else
-                            btnPress = 1;
+                        waitCountDC = 0;
                     }
                 }
             }
 
-            XFlush(display);
-            XCloseDisplay(display);
+            tmpX = mcorFinal_X;
+            tmpY = mcorFinal_Y;
+
+            preClick(&pos_x2, &pos_y2);
+
+            /*
+             * scroll
+             */
+            if(ui->chkEnableScroll->isChecked() == true) {
+                scrollInit(&pos_x2, &pos_y2);
+                if(ifScrollUp == 1) {
+                    XTestFakeButtonEvent(display, 4, 1, 10);
+                    XTestFakeButtonEvent(display, 4, 0, 10);
+                }
+                if(ifScrollDwn == 1) {
+                    XTestFakeButtonEvent(display, 5, 1, 10);
+                    XTestFakeButtonEvent(display, 5, 0, 10);
+                }
+            }
+
+            /*
+             * left click
+             */
+            if(ui->chkEnableLeftClick->isChecked() == true) {
+                cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), pinchR, cv::Scalar(255, 0, 0), 2);
+                if(pinch == 1) {
+                    if(btnPress == 1) {
+                        XTestFakeButtonEvent(display, 1, 1, 1);
+                        btnPress = 0;
+                        btnRel = 1;
+                    }
+                }
+                else{
+                    if(btnRel == 1) {
+                        XTestFakeButtonEvent(display, 1, 0, 1);
+                        btnRel = 0;
+                    }
+                    else
+                        btnPress = 1;
+                }
+            }
         }
+
+        XFlush(display);
+        XCloseDisplay(display);
+    }
+    else {
+        motionEnable = 0;
     }
 
-    /**
-     * Display images.
+    /*
+     * display images
      */
     QImage qImgDisplay((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
     ui->lblDisplayClean->setPixmap(imgDisplay.fromImage(qImgDisplay).scaledToHeight(480, Qt::FastTransformation));
@@ -522,12 +543,6 @@ void ishara::processFrameAndUpdateGUI() {
 
     QImage qImgDisplayThresh2((uchar*)imgThresh2.data, imgThresh2.cols, imgThresh2.rows, imgThresh2.step, QImage::Format_Indexed8);
     ui->lblConfigureRight->setPixmap(imgDisplay.fromImage(qImgDisplayThresh2).scaledToHeight(236, Qt::FastTransformation));
-
-    /**
-     * Clean up the crap.
-     */
-    imgThresh1.release();
-    imgThresh2.release();
 }
 
 void ishara::openingOperation(cv::Mat *image) {
@@ -539,7 +554,7 @@ int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
     cv::Moments moment;
     moment = moments(*imgThresh);
 
-    /**
+    /*
      * moment10 = 1st order spatial moment around x-axis
      * moment01 = 1st order spatial moment around y-axis
      * moment00 = 0th order central moment
@@ -574,6 +589,9 @@ void ishara::getxScreenSize() {
     xScreenWidth = screen -> width;
     xScreenHeight = screen -> height;
 
+    mcorFinal_X = xScreenWidth/2;
+    mcorFinal_Y = xScreenHeight/2;
+
     XCloseDisplay(display);
 }
 
@@ -593,24 +611,13 @@ void::ishara::mouseMap() {
         msPoint_X = mcorInit_X;
         msPoint_Y = mcorInit_Y;
 
+
         msFlag = 0;
     }
 
-    project();
-
-    cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), smoothFac, cv::Scalar(0, 255, 0));
-    cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), 2, cv::Scalar(0, 255, 0));
-    cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), 2, cv::Scalar(255, 0, 0));
-}
-
-void::ishara::project() {
-    if(msPoint_X > Margin && msPoint_Y > Margin && msPoint_X < (frame.cols - Margin) && msPoint_Y < (frame.rows - Margin)) {
-        float ratio_w = float(xScreenWidth) / float(frame.cols - (2 * Margin));
-        mcorFinal_X = (msPoint_X - Margin) * ratio_w;
-
-        float ratio_h = float(xScreenHeight) / float(frame.rows - (2 * Margin));
-        mcorFinal_Y = (msPoint_Y - Margin) * ratio_h;
-    }
+    cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), smoothFac, cv::Scalar(0, 255, 0), 2);
+    cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), 2, cv::Scalar(0, 255, 0), 2);
+    cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), 2, cv::Scalar(255, 0, 0), 2);
 }
 
 void ishara::on_btnStartStop_clicked() {
@@ -621,7 +628,7 @@ void::ishara::preClick(int *x, int *y) {
     pinch = 0;
     int origR = sqrt(pow((*x - mcorInit_X), 2) + pow((*y - mcorInit_Y), 2));
 
-    cv::circle(frame, cv::Point(*x, *y), 2, cv::Scalar(0, 0, 255));
+    cv::circle(frame, cv::Point(*x, *y), 2, cv::Scalar(0, 0, 255), 2);
 
     if(origR < pinchR)
         pinch = 1;
@@ -850,4 +857,27 @@ int ishara::on_actionAbout_triggered() {
 
 void ishara::on_actionStart_triggered() {
     startStop();
+}
+
+void ishara::namedImage() {
+    QString suffix = "Capture_" + QString::number(iteration) + ".jpg";
+    QByteArray suf_arr = suffix.toLocal8Bit();
+    suf_buffer = suf_arr.data();
+    ++iteration;
+}
+
+void ishara::on_actionOriginal_triggered() {
+    namedImage();
+    cv::cvtColor(frame, frame, CV_BGR2RGB);
+    cv::imwrite(suf_buffer, frame);
+}
+
+void ishara::on_actionThresh_1_triggered() {
+    namedImage();
+    cv::imwrite(suf_buffer, imgThresh1);
+}
+
+void ishara::on_actionThresh_2_triggered() {
+    namedImage();
+    cv::imwrite(suf_buffer, imgThresh2);
 }
