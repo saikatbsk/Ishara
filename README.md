@@ -1,5 +1,7 @@
-|| ISHARA || Gesture: A New Communicator
+|| ISHARA ||
 ===============================================
+Gesture: A New Communicator
+---------------------------
 ISHARA consists of a built-in or USB webcam and a software which is developed
 through this project. The camera is placed on top of the display screen facing
 the user and the user uses two different color-markers on the fingers to
