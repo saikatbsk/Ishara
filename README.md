@@ -17,10 +17,15 @@ See LICENSE.txt to find all the legal stuff.
 Requirements
 ------------
 OpenCV (opencv.org)
+
 Qt Development Libraries
+
 V4l2 Development Libraries
+
 XTEST Extension Libraries
+
 CMake
+
 Make
 
 Compilation
