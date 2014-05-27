@@ -74,9 +74,7 @@ private:
     int tmpX;
     int tmpY;
     int waitCountRC;
-    int waitCountDC;
     int rightClickDealy;
-    int doubleClickDealy;
     int smoothFac;
     int pinch;
     int pinchR;
@@ -106,7 +104,6 @@ private:
     int cfgScroll;
     int cfgLClick;
     int cfgRClick;
-    int cfgDClick;
     int devSelActive;
     int pre_x;
     int pre_y;
@@ -116,6 +113,8 @@ private:
     char *suf_buffer;
 
 public slots:
+
+private slots:
     void startStop();
     void camOpen();
     void processFrameAndUpdateGUI();
@@ -126,8 +125,6 @@ public slots:
     void scrollInit(int*, int*);
     void openingOperation(cv::Mat*);
     void namedImage();
-
-private slots:
     void on_btnStartStop_clicked();
     void on_comboSelectCam_currentIndexChanged(int index);
     void on_spnHMin1_valueChanged(int arg1);
@@ -158,15 +155,12 @@ private slots:
     void on_spnPinchR_valueChanged(int arg1);
     void on_sliderRCRC_valueChanged(int value);
     void on_spnRCRC_valueChanged(int arg1);
-    void on_sliderDCRC_valueChanged(int value);
-    void on_spnDCRC_valueChanged(int arg1);
     void on_actionQuit_triggered();
     int on_actionAbout_triggered();
     void on_actionStart_triggered();
     void on_chkEnableScroll_stateChanged(int arg1);
     void on_chkEnableLeftClick_stateChanged(int arg1);
     void on_chkEnableRightClick_stateChanged(int arg1);
-    void on_chkEnableDoubleClick_stateChanged(int arg1);
 	void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void on_actionOriginal_triggered();
     void on_actionThresh_1_triggered();

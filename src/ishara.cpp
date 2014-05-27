@@ -65,13 +65,11 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
     pinchR = settings.value("pinchR", 66).toInt();
     rightClickDealy = settings.value("rightClickDealy", 20).toInt();
-    doubleClickDealy = settings.value("doubleClickDelay", 6).toInt();
     smoothFac = settings.value("smoothFac", 8).toInt();
 
     cfgScroll = settings.value("cfgScroll", 2).toInt();
     cfgLClick = settings.value("cfgLClick", 2).toInt();
     cfgRClick = settings.value("cfgRClick", 2).toInt();
-    cfgDClick = settings.value("cfgDClick", 0).toInt();
 
     /*
      * initializing some more variables
@@ -88,7 +86,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     tmpX = 0;
     tmpY = 0;
     waitCountRC = 0;
-    waitCountDC = 0;
     pinch = 0;
     ifScrollUp = 0;
     ifScrollDwn = 0;
@@ -188,24 +185,17 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     ui->spnPinchR->setValue(pinchR);
 
     /*
-     * setting up rightClickDealy and doubleClickDealy slider; the variables rightClickDealy
-     * and doubleClickDealy determines the loop count while determining a right click and
-     * a double click respectively
+     * setting up rightClickDealy slider; the variables rightClickDealy
+     * determines the loop count while determining a right click
      */
     ui->sliderRCRC->setRange(10, 30);
     ui->sliderRCRC->setValue(rightClickDealy);
 
-    ui->sliderDCRC->setRange(4, 20);
-    ui->sliderDCRC->setValue(doubleClickDealy);
-
     /*
-     * setting up rightClickDealy and doubleClickDealy spinbox, the usage is obvious
+     * setting up rightClickDealy spinbox, the usage is obvious
      */
     ui->spnRCRC->setRange(10, 30);
     ui->spnRCRC->setValue(rightClickDealy);
-
-    ui->spnDCRC->setRange(4, 20);
-    ui->spnDCRC->setValue(doubleClickDealy);
 
     /*
      * setting up check boxes to enable/disable functionalities
@@ -229,13 +219,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
     else {
         ui->chkEnableRightClick->setChecked(false);
-    }
-
-    if(cfgDClick > 0) {
-        ui->chkEnableDoubleClick->setChecked(true);
-    }
-    else {
-        ui->chkEnableDoubleClick->setChecked(false);
     }
 
     /*
@@ -307,7 +290,6 @@ ishara::~ishara() {
     smoothFac = ui->sliderSmoothFac->value();
     pinchR = ui->sliderPinchR->value();
     rightClickDealy = ui->sliderRCRC->value();
-    doubleClickDealy = ui->sliderDCRC->value();
 
     delete ui;
 
@@ -327,13 +309,11 @@ ishara::~ishara() {
 
     settings.setValue("pinchR", pinchR);
     settings.setValue("rightClickDealy", rightClickDealy);
-    settings.setValue("doubleClickDelay", doubleClickDealy);
     settings.setValue("smoothFac", smoothFac);
 
     settings.setValue("cfgScroll", cfgScroll);
     settings.setValue("cfgLClick", cfgLClick);
     settings.setValue("cfgRClick", cfgRClick);
-    settings.setValue("cfgDClick", cfgDClick);
 
     settings.sync();
 }
@@ -361,7 +341,6 @@ void ishara::processFrameAndUpdateGUI() {
     smoothFac = ui->sliderSmoothFac->value();
     pinchR = ui->sliderPinchR->value();
     rightClickDealy = ui->sliderRCRC->value();
-    doubleClickDealy = ui->sliderDCRC->value();
 
     capture.read(src);
 
@@ -427,8 +406,8 @@ void ishara::processFrameAndUpdateGUI() {
             dx = msPoint_X - pre_x;
             dy = msPoint_Y - pre_y;
 
-            mcorFinal_X += dx;
-            mcorFinal_Y += dy;
+            mcorFinal_X += dx * (xScreenWidth/frame.cols);
+            mcorFinal_Y += dy * (xScreenHeight/frame.rows);
 
             if(mcorFinal_X > xScreenWidth)
                 mcorFinal_X = xScreenWidth;
@@ -444,13 +423,11 @@ void ishara::processFrameAndUpdateGUI() {
         if(marker2) {
             if(tmpX == mcorFinal_X && tmpY == mcorFinal_Y) {
                 ++waitCountRC;
-                ++waitCountDC;
             }
             else {
                 tmpX = 0;
                 tmpY = 0;
                 waitCountRC = 0;
-                waitCountDC = 0;
             }
 
             /*
@@ -463,22 +440,6 @@ void ishara::processFrameAndUpdateGUI() {
                     tmpX = 0;
                     tmpY = 0;
                     waitCountRC = 0;
-                }
-
-                /*
-                 * double click
-                 */
-                else if(ui->chkEnableDoubleClick->isChecked() == true) {
-                    if(waitCountDC == doubleClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1)) {
-                        XTestFakeButtonEvent(display, 1, 1, 1);
-                        XTestFakeButtonEvent(display, 1, 0, 1);
-                        sleep(1);
-                        XTestFakeButtonEvent(display, 1, 1, 1);
-                        XTestFakeButtonEvent(display, 1, 0, 1);
-                        tmpX = 0;
-                        tmpY = 0;
-                        waitCountDC = 0;
-                    }
                 }
             }
 
@@ -611,7 +572,6 @@ void::ishara::mouseMap() {
         msPoint_X = mcorInit_X;
         msPoint_Y = mcorInit_Y;
 
-
         msFlag = 0;
     }
 
@@ -701,10 +661,6 @@ void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
 
 void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
     cfgRClick = arg1;
-}
-
-void ishara::on_chkEnableDoubleClick_stateChanged(int arg1) {
-    cfgDClick = arg1;
 }
 
 void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
@@ -834,14 +790,6 @@ void ishara::on_sliderRCRC_valueChanged(int value) {
 
 void ishara::on_spnRCRC_valueChanged(int arg1) {
     ui->sliderRCRC->setValue(arg1);
-}
-
-void ishara::on_sliderDCRC_valueChanged(int value) {
-    ui->spnDCRC->setValue(value);
-}
-
-void ishara::on_spnDCRC_valueChanged(int arg1) {
-    ui->sliderDCRC->setValue(arg1);
 }
 
 void ishara::on_actionQuit_triggered() {
