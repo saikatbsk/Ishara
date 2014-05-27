@@ -34,9 +34,8 @@ public:
     ~ishara();
 
 private:
-
-	void hideEvent(QHideEvent *event);
-	void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
+    void showEvent(QShowEvent *event);
 
     Ui::ishara *ui;
     cv::VideoCapture capture;
@@ -161,7 +160,7 @@ private slots:
     void on_chkEnableScroll_stateChanged(int arg1);
     void on_chkEnableLeftClick_stateChanged(int arg1);
     void on_chkEnableRightClick_stateChanged(int arg1);
-	void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void on_actionOriginal_triggered();
     void on_actionThresh_1_triggered();
     void on_actionThresh_2_triggered();
