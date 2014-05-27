@@ -222,7 +222,7 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
 
     /*
-     * samera selection in Linux
+     * camera selection in Linux
      */
     for(deviceIndex = 0 ; deviceIndex < 64 ; ++deviceIndex) {
         QString device = "/dev/video" + QString::number(deviceIndex);
