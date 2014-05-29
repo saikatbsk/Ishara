@@ -1,53 +1,67 @@
-|| ISHARA ||
+Ishara - Mouse Control with Gesture
 ===============================================
-Gesture: A New Communicator
+![alt text](http://saikatbasak.com/projects/ishara/img/banner.png "Ishara")
+--------------------------
+Ishara is a perceptive user interface based on computer vision.
+Ishara is a gesture interpretation system and is used to emulate
+the computer mouse with finger gestures. The objective behind
+this project was to develop an intuitive and fun way to interact
+with computers and other digital devices.
+Ishara started as a hobby project and became open source in 2013.
+
+Ishara consists of a built-in or USB webcam and a software developed
+through this project. The camera is placed on top of the display screen
+facing the user and the user uses two different color-markers on the
+fingers to control the mouse pointer. The user can do all shorts of
+actions that is actually done using a mouse including left-click,
+right-click, scroll and drag-n-drop.
+
+It is developed using OpenCV and Qt and written in C++.
+The initial prototype runs on Linux. There is no Mac or Windows version yet.
+
+Requirements :white_check_mark:
+-------------------------------
+:pushpin: OpenCV
+
+:pushpin: Qt Development Libraries
+
+:pushpin: V4l2 Development Libraries
+
+:pushpin: XTEST Extension Libraries
+
+:pushpin: CMake
+
+:pushpin: Make
+
+Compilation :arrow_forward:
 ---------------------------
-ISHARA consists of a built-in or USB webcam and a software which is developed
-through this project. The camera is placed on top of the display screen facing
-the user and the user uses two different color-markers on the fingers to
-control the mouse pointer. Yes the user can do all shorts of actions that is
-actually done using a mouse including left-click, right-click, scroll,
-drag-n-drop and such.
+Once you have setup the dependencies, download the source:
+```
+$ cd ~/Downloads
+$ git clone https://github.com/saikatbsk/Ishara.git
+```
 
-It is developed using OpenCV and Qt and written in C++. The initial prototype
-runs on Linux. There is no Mac or Windows version yet.
+Create and move into the build directory:
+```
+$ mkdir -p Ishara/build
+$ cd Ishara/build
+```
 
-See LICENSE.txt to find all the legal stuff.
+Run *cmake* followed by *make* to build Ishara:
+```
+$ cmake ..
+$ make
+```
 
-Requirements
+To install:
+```
+$ sudo make install
+```
+
+Links :link:
 ------------
-OpenCV (opencv.org)
+* [Ishara URL](http://saikatbasak.com/projects/ishara/)
+* [Ishara on Youtube](https://www.youtube.com/watch?v=B1_xtdR8pn4)
+* [OpenCV](http://opencv.org/)
 
-Qt Development Libraries
-
-V4l2 Development Libraries
-
-XTEST Extension Libraries
-
-CMake
-
-Make
-
-Compilation
-------------
-Once you have setup the dependencies, download the source,
-
-    $ cd ~/Downloads
-    $ git clone https://github.com/saikatbsk/Ishara.git
-
-Create and move into the build directory,
-
-    $ mkdir -p Ishara/build
-    $ cd Ishara/build
-
-Run cmake followed by make to build Ishara,
-
-    $ cmake ..
-    $ make
-
-To install,
-
-    $ sudo make install
-
-
-Live long and may the force be with you ;)
+> Live long and may the source be with you. :octocat:
