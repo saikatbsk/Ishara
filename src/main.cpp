@@ -20,9 +20,8 @@ int main(int argc, char *argv[]) {
     }
 
     QApplication a(argc, argv);
-
-	QApplication::setOrganizationName("Ishara");
-	QApplication::setApplicationName("Ishara");
+    QApplication::setOrganizationName("Ishara");
+    QApplication::setApplicationName("Ishara");
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         QApplication::setQuitOnLastWindowClosed(false);
