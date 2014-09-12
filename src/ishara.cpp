@@ -19,8 +19,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
   if (QSystemTrayIcon::isSystemTrayAvailable()) {
       /*
-         * init system tray
-         */
+       * init system tray
+       */
       maximizeAction = new QAction(tr("&Show"), this);
       connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
       quitAction = new QAction(tr("&Quit"), this);
@@ -45,8 +45,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
 
   /*
-     * initializing some variables from the configuration file
-     */
+   * initializing some variables from the configuration file
+   */
   settings.sync();
 
   hMin1 = settings.value("hMin1", 0).toInt();
@@ -72,8 +72,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
   cfgRClick = settings.value("cfgRClick", 2).toInt();
 
   /*
-     * initializing some more variables
-     */
+   * initializing some more variables
+   */
   CAM_INDEX = -1;
   mcorInit_X = 0;
   mcorInit_Y = 0;
@@ -95,22 +95,22 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
   iteration = 0;
 
   /*
-     * setting up the user interface
-     */
+   * setting up the user interface
+   */
   ui->setupUi(this);
 
   /*
-     * setting up smoothness factor slider; smoothness factor is the maximum allowable
-     * distance the index finger can move without effecting any change in the mouse
-     * cursor position; a reasonable value for this would be 6 to 8 depending on the user
-     */
+   * setting up smoothness factor slider; smoothness factor is the maximum allowable
+   * distance the index finger can move without effecting any change in the mouse
+   * cursor position; a reasonable value for this would be 6 to 8 depending on the user
+   */
   ui->sliderSmoothFac->setRange(2, 12);
   ui->sliderSmoothFac->setValue(smoothFac);
 
   /*
-     * setting up color selection sliders; the HSV range for the two color markers to be
-     * detected are set using these sliders
-     */
+   * setting up color selection sliders; the HSV range for the two color markers to be
+   * detected are set using these sliders
+   */
   ui->sliderHMin1->setRange(0, 179);
   ui->sliderHMax1->setRange(0, 179);
   ui->sliderSMin1->setRange(0, 255);
@@ -140,9 +140,9 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
   ui->sliderVMax2->setValue(vMax2);
 
   /*
-     * setting up color selection spinboxes; the values determining the HSV range can
-     * also be altered using the spin boxes
-     */
+   * setting up color selection spinboxes; the values determining the HSV range can
+   * also be altered using the spin boxes
+   */
   ui->spnHMin1->setRange(0, 179);
   ui->spnHMax1->setRange(0, 179);
   ui->spnSMin1->setRange(0, 255);
@@ -172,34 +172,34 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
   ui->spnVMax2->setValue(vMax2);
 
   /*
-     * setting up pinchR slider; the pinchR variable determines the maximum distance
-     * between the center co-ordinates of the two color markers when detecting a Pinch
-     */
+   * setting up pinchR slider; the pinchR variable determines the maximum distance
+   * between the center co-ordinates of the two color markers when detecting a Pinch
+   */
   ui->sliderPinchR->setRange(10, 120);
   ui->sliderPinchR->setValue(pinchR);
 
   /*
-     * setting up pinchR spinbox; the value of pinchR can also be altered using a spinbox
-     */
+   * setting up pinchR spinbox; the value of pinchR can also be altered using a spinbox
+   */
   ui->spnPinchR->setRange(10, 120);
   ui->spnPinchR->setValue(pinchR);
 
   /*
-     * setting up rightClickDealy slider; the variables rightClickDealy
-     * determines the loop count while determining a right click
-     */
+   * setting up rightClickDealy slider; the variables rightClickDealy
+   * determines the loop count while determining a right click
+   */
   ui->sliderRCRC->setRange(10, 30);
   ui->sliderRCRC->setValue(rightClickDealy);
 
   /*
-     * setting up rightClickDealy spinbox, the usage is obvious
-     */
+   * setting up rightClickDealy spinbox, the usage is obvious
+   */
   ui->spnRCRC->setRange(10, 30);
   ui->spnRCRC->setValue(rightClickDealy);
 
   /*
-     * setting up check boxes to enable/disable functionalities
-     */
+   * setting up check boxes to enable/disable functionalities
+   */
   if(cfgScroll > 0) {
       ui->chkEnableScroll->setChecked(true);
     }
@@ -222,8 +222,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
 
   /*
-     * camera selection in Linux
-     */
+   * camera selection in Linux
+   */
   for(deviceIndex = 0 ; deviceIndex < 64 ; ++deviceIndex) {
       QString device = "/dev/video" + QString::number(deviceIndex);
       QByteArray array = device.toLocal8Bit();
@@ -242,8 +242,8 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
 
   /*
-     * camera operations
-     */
+   * camera operations
+   */
   camOpen();
 
   capture.read(src);
@@ -253,20 +253,20 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
     }
 
   /*
-     * get the screen size
-     */
+   * get the screen size
+   */
   getxScreenSize();
 
   /*
-     * time warp - make it so
-     */
+   * time warp - make it so
+   */
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(processFrameAndUpdateGUI()));
   timer->start(20);
 
   /*
-     * clean up the crap
-     */
+   * clean up the crap
+   */
   src.release();
   frame.release();
   imgHSV.release();
@@ -345,19 +345,19 @@ void ishara::processFrameAndUpdateGUI() {
   capture.read(src);
 
   /*
-     * flip the initial image and convert to RGB as opencv would read images in BGR format
-     */
+   * flip the initial image and convert to RGB as opencv would read images in BGR format
+   */
   cv::flip(src, frame, 1);
   cv::cvtColor(frame, frame, CV_BGR2RGB);
 
   /*
-     * converting the image to HSV
-     */
+   * converting the image to HSV
+   */
   cv::cvtColor(frame, imgHSV, CV_BGR2HSV);
 
   /*
-     * identifying the color markers used in the index finger
-     */
+   * identifying the color markers used in the index finger
+   */
   cv::inRange(imgHSV,
               cv::Scalar(hMin1, sMin1, vMin1),
               cv::Scalar(hMax1, sMax1, vMax1),
@@ -366,8 +366,8 @@ void ishara::processFrameAndUpdateGUI() {
   marker1 = trackObject(&imgThresh1, &pos_x1, &pos_y1);
 
   /*
-     * identifying the color markers used in the index thumb
-     */
+   * identifying the color markers used in the index thumb
+   */
   cv::inRange(imgHSV,
               cv::Scalar(hMin2, sMin2, vMin2),
               cv::Scalar(hMax2, sMax2, vMax2),
@@ -392,8 +392,8 @@ void ishara::processFrameAndUpdateGUI() {
         }
 
       /*
-         * map and move mouse pointer on screen
-         */
+       * map and move mouse pointer on screen
+       */
       mouseMap();
 
       if(motionEnable == 0) {
@@ -431,8 +431,8 @@ void ishara::processFrameAndUpdateGUI() {
             }
 
           /*
-             * right click
-             */
+           * right click
+           */
           if(ui->chkEnableRightClick->isChecked() == true) {
               if(waitCountRC == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
                   XTestFakeButtonEvent(display, 3, 1, 1);
@@ -449,8 +449,8 @@ void ishara::processFrameAndUpdateGUI() {
           preClick(&pos_x2, &pos_y2);
 
           /*
-             * scroll
-             */
+           * scroll
+           */
           if(ui->chkEnableScroll->isChecked() == true) {
               scrollInit(&pos_x2, &pos_y2);
               if(ifScrollUp == 1) {
@@ -464,8 +464,8 @@ void ishara::processFrameAndUpdateGUI() {
             }
 
           /*
-             * left click
-             */
+           * left click
+           */
           if(ui->chkEnableLeftClick->isChecked() == true) {
               cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), pinchR, cv::Scalar(255, 0, 0), 2);
               if(pinch == 1) {
@@ -494,8 +494,8 @@ void ishara::processFrameAndUpdateGUI() {
     }
 
   /*
-     * display images
-     */
+   * display images
+   */
   QImage qImgDisplay((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
   ui->lblDisplayClean->setPixmap(imgDisplay.fromImage(qImgDisplay).scaledToHeight(480, Qt::FastTransformation));
 
@@ -516,10 +516,10 @@ int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
   moment = moments(*imgThresh);
 
   /*
-     * moment10 = 1st order spatial moment around x-axis
-     * moment01 = 1st order spatial moment around y-axis
-     * moment00 = 0th order central moment
-     */
+   * moment10 = 1st order spatial moment around x-axis
+   * moment01 = 1st order spatial moment around y-axis
+   * moment00 = 0th order central moment
+   */
   double moment10 = moment.m10;
   double moment01 = moment.m01;
   double moment00 = moment.m00;
