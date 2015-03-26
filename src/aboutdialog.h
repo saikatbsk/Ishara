@@ -10,17 +10,17 @@ namespace Ui {
 class AboutDialog : public QDialog {
   Q_OBJECT
 
-public:
-  explicit AboutDialog(QWidget *parent = 0);
-  ~AboutDialog();
+  public:
+    explicit AboutDialog(QWidget *parent = 0);
+    ~AboutDialog();
 
-private slots:
-  void on_btnCloseDialog_clicked();
+    private slots:
+      void on_btnCloseDialog_clicked();
 
-private:
-  Ui::AboutDialog *ui;
+  private:
+    Ui::AboutDialog *ui;
 
-  QPixmap imgIcon;
+    QPixmap imgIcon;
 };
 
 #endif // ABOUTDIALOG_H

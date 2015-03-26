@@ -18,31 +18,31 @@
 ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
   if (QSystemTrayIcon::isSystemTrayAvailable()) {
-      /*
-       * init system tray
-       */
-      maximizeAction = new QAction(tr("&Show"), this);
-      connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
-      quitAction = new QAction(tr("&Quit"), this);
-      connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
+    /*
+     * init system tray
+     */
+    maximizeAction = new QAction(tr("&Show"), this);
+    connect(maximizeAction, SIGNAL(triggered()), this, SLOT(show()));
+    quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(on_actionQuit_triggered()));
 
-      startStopAction = new QAction(tr("S&tart"), this);
-      connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
+    startStopAction = new QAction(tr("S&tart"), this);
+    connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
 
-      trayIconMenu = new QMenu(this);
-      trayIconMenu->addAction(maximizeAction);
-      trayIconMenu->addSeparator();
-      trayIconMenu->addAction(startStopAction);
-      trayIconMenu->addSeparator();
-      trayIconMenu->addAction(quitAction);
-      trayIcon = new QSystemTrayIcon(this);
-      trayIcon->setContextMenu(trayIconMenu);
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(maximizeAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(startStopAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(trayIconMenu);
 
-      connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-      const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
-      trayIcon->setIcon(*icon);
-      trayIcon->hide();
-    }
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
+    trayIcon->setIcon(*icon);
+    trayIcon->hide();
+  }
 
   /*
    * initializing some variables from the configuration file
@@ -201,45 +201,45 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
    * setting up check boxes to enable/disable functionalities
    */
   if(cfgScroll > 0) {
-      ui->chkEnableScroll->setChecked(true);
-    }
+    ui->chkEnableScroll->setChecked(true);
+  }
   else {
-      ui->chkEnableScroll->setChecked(false);
-    }
+    ui->chkEnableScroll->setChecked(false);
+  }
 
   if(cfgLClick > 0) {
-      ui->chkEnableLeftClick->setChecked(true);
-    }
+    ui->chkEnableLeftClick->setChecked(true);
+  }
   else {
-      ui->chkEnableLeftClick->setChecked(false);
-    }
+    ui->chkEnableLeftClick->setChecked(false);
+  }
 
   if(cfgRClick > 0) {
-      ui->chkEnableRightClick->setChecked(true);
-    }
+    ui->chkEnableRightClick->setChecked(true);
+  }
   else {
-      ui->chkEnableRightClick->setChecked(false);
-    }
+    ui->chkEnableRightClick->setChecked(false);
+  }
 
   /*
    * camera selection in Linux
    */
   for(deviceIndex = 0 ; deviceIndex < 64 ; ++deviceIndex) {
-      QString device = "/dev/video" + QString::number(deviceIndex);
-      QByteArray array = device.toLocal8Bit();
-      char *buffer = array.data();
-      if((fd = open(buffer, O_RDONLY)) != -1) {
-          if(ioctl(fd, VIDIOC_QUERYCAP, &vidiocap) == -1) {
-              ui->comboSelectCam->addItem(device);
-            }
-          else {
-              ui->comboSelectCam->addItem(QString::fromLocal8Bit(reinterpret_cast<const char*>(vidiocap.card)));
-            }
-          if(CAM_INDEX == -1) {
-              CAM_INDEX = deviceIndex;
-            }
-        }
+    QString device = "/dev/video" + QString::number(deviceIndex);
+    QByteArray array = device.toLocal8Bit();
+    char *buffer = array.data();
+    if((fd = open(buffer, O_RDONLY)) != -1) {
+      if(ioctl(fd, VIDIOC_QUERYCAP, &vidiocap) == -1) {
+        ui->comboSelectCam->addItem(device);
+      }
+      else {
+        ui->comboSelectCam->addItem(QString::fromLocal8Bit(reinterpret_cast<const char*>(vidiocap.card)));
+      }
+      if(CAM_INDEX == -1) {
+        CAM_INDEX = deviceIndex;
+      }
     }
+  }
 
   /*
    * camera operations
@@ -248,9 +248,9 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
   capture.read(src);
   if(src.empty() == true) {
-      ui->statusBar->showMessage("Read error!");
-      return;
-    }
+    ui->statusBar->showMessage("Read error!");
+    return;
+  }
 
   /*
    * get the screen size
@@ -359,9 +359,9 @@ void ishara::processFrameAndUpdateGUI() {
    * identifying the color markers used in the index finger
    */
   cv::inRange(imgHSV,
-              cv::Scalar(hMin1, sMin1, vMin1),
-              cv::Scalar(hMax1, sMax1, vMax1),
-              imgThresh1);
+      cv::Scalar(hMin1, sMin1, vMin1),
+      cv::Scalar(hMax1, sMax1, vMax1),
+      imgThresh1);
   openingOperation(&imgThresh1);
   marker1 = trackObject(&imgThresh1, &pos_x1, &pos_y1);
 
@@ -369,9 +369,9 @@ void ishara::processFrameAndUpdateGUI() {
    * identifying the color markers used in the index thumb
    */
   cv::inRange(imgHSV,
-              cv::Scalar(hMin2, sMin2, vMin2),
-              cv::Scalar(hMax2, sMax2, vMax2),
-              imgThresh2);
+      cv::Scalar(hMin2, sMin2, vMin2),
+      cv::Scalar(hMax2, sMax2, vMax2),
+      imgThresh2);
   openingOperation(&imgThresh2);
   marker2 = trackObject(&imgThresh2, &pos_x2, &pos_y2);
 
@@ -379,119 +379,119 @@ void ishara::processFrameAndUpdateGUI() {
   mcorInit_Y = pos_y1;
 
   if(marker1 && startEmulation) {
-      Display *display = XOpenDisplay(0);
-      if(!display) {
-          ui->statusBar->showMessage("Error opening display!");
-          return;
-        }
+    Display *display = XOpenDisplay(0);
+    if(!display) {
+      ui->statusBar->showMessage("Error opening display!");
+      return;
+    }
 
-      Window root = DefaultRootWindow(display);
-      if(!root) {
-          ui->statusBar->showMessage("Root window not found!");
-          return;
-        }
+    Window root = DefaultRootWindow(display);
+    if(!root) {
+      ui->statusBar->showMessage("Root window not found!");
+      return;
+    }
+
+    /*
+     * map and move mouse pointer on screen
+     */
+    mouseMap();
+
+    if(motionEnable == 0) {
+      pre_x = msPoint_X;
+      pre_y = msPoint_Y;
+
+      motionEnable = 1;
+    }
+    else {
+      dx = msPoint_X - pre_x;
+      dy = msPoint_Y - pre_y;
+
+      mcorFinal_X += dx * (xScreenWidth/frame.cols);
+      mcorFinal_Y += dy * (xScreenHeight/frame.rows);
+
+      if(mcorFinal_X > xScreenWidth)
+        mcorFinal_X = xScreenWidth;
+      if(mcorFinal_Y > xScreenHeight)
+        mcorFinal_Y = xScreenHeight;
+
+      pre_x = msPoint_X;
+      pre_y = msPoint_Y;
+    }
+
+    XTestFakeMotionEvent(display, DefaultScreen(display), mcorFinal_X, mcorFinal_Y, 0);
+
+    if(marker2) {
+      if(tmpX == mcorFinal_X && tmpY == mcorFinal_Y) {
+        ++waitCountRC;
+      }
+      else {
+        tmpX = 0;
+        tmpY = 0;
+        waitCountRC = 0;
+      }
 
       /*
-       * map and move mouse pointer on screen
+       * right click
        */
-      mouseMap();
-
-      if(motionEnable == 0) {
-          pre_x = msPoint_X;
-          pre_y = msPoint_Y;
-
-          motionEnable = 1;
+      if(ui->chkEnableRightClick->isChecked() == true) {
+        if(waitCountRC == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
+          XTestFakeButtonEvent(display, 3, 1, 1);
+          XTestFakeButtonEvent(display, 3, 0, 1);
+          tmpX = 0;
+          tmpY = 0;
+          waitCountRC = 0;
         }
-      else {
-          dx = msPoint_X - pre_x;
-          dy = msPoint_Y - pre_y;
+      }
 
-          mcorFinal_X += dx * (xScreenWidth/frame.cols);
-          mcorFinal_Y += dy * (xScreenHeight/frame.rows);
+      tmpX = mcorFinal_X;
+      tmpY = mcorFinal_Y;
 
-          if(mcorFinal_X > xScreenWidth)
-            mcorFinal_X = xScreenWidth;
-          if(mcorFinal_Y > xScreenHeight)
-            mcorFinal_Y = xScreenHeight;
+      preClick(&pos_x2, &pos_y2);
 
-          pre_x = msPoint_X;
-          pre_y = msPoint_Y;
+      /*
+       * scroll
+       */
+      if(ui->chkEnableScroll->isChecked() == true) {
+        scrollInit(&pos_x2, &pos_y2);
+        if(ifScrollUp == 1) {
+          XTestFakeButtonEvent(display, 4, 1, 10);
+          XTestFakeButtonEvent(display, 4, 0, 10);
         }
-
-      XTestFakeMotionEvent(display, DefaultScreen(display), mcorFinal_X, mcorFinal_Y, 0);
-
-      if(marker2) {
-          if(tmpX == mcorFinal_X && tmpY == mcorFinal_Y) {
-              ++waitCountRC;
-            }
-          else {
-              tmpX = 0;
-              tmpY = 0;
-              waitCountRC = 0;
-            }
-
-          /*
-           * right click
-           */
-          if(ui->chkEnableRightClick->isChecked() == true) {
-              if(waitCountRC == rightClickDealy && (ifScrollUp != 1 && ifScrollDwn != 1) && pinch != 1) {
-                  XTestFakeButtonEvent(display, 3, 1, 1);
-                  XTestFakeButtonEvent(display, 3, 0, 1);
-                  tmpX = 0;
-                  tmpY = 0;
-                  waitCountRC = 0;
-                }
-            }
-
-          tmpX = mcorFinal_X;
-          tmpY = mcorFinal_Y;
-
-          preClick(&pos_x2, &pos_y2);
-
-          /*
-           * scroll
-           */
-          if(ui->chkEnableScroll->isChecked() == true) {
-              scrollInit(&pos_x2, &pos_y2);
-              if(ifScrollUp == 1) {
-                  XTestFakeButtonEvent(display, 4, 1, 10);
-                  XTestFakeButtonEvent(display, 4, 0, 10);
-                }
-              if(ifScrollDwn == 1) {
-                  XTestFakeButtonEvent(display, 5, 1, 10);
-                  XTestFakeButtonEvent(display, 5, 0, 10);
-                }
-            }
-
-          /*
-           * left click
-           */
-          if(ui->chkEnableLeftClick->isChecked() == true) {
-              cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), pinchR, cv::Scalar(255, 0, 0), 2);
-              if(pinch == 1) {
-                  if(btnPress == 1) {
-                      XTestFakeButtonEvent(display, 1, 1, 1);
-                      btnPress = 0;
-                      btnRel = 1;
-                    }
-                }
-              else{
-                  if(btnRel == 1) {
-                      XTestFakeButtonEvent(display, 1, 0, 1);
-                      btnRel = 0;
-                    }
-                  else
-                    btnPress = 1;
-                }
-            }
+        if(ifScrollDwn == 1) {
+          XTestFakeButtonEvent(display, 5, 1, 10);
+          XTestFakeButtonEvent(display, 5, 0, 10);
         }
+      }
 
-      XFlush(display);
-      XCloseDisplay(display);
+      /*
+       * left click
+       */
+      if(ui->chkEnableLeftClick->isChecked() == true) {
+        cv::circle(frame, cv::Point(mcorInit_X, mcorInit_Y), pinchR, cv::Scalar(255, 0, 0), 2);
+        if(pinch == 1) {
+          if(btnPress == 1) {
+            XTestFakeButtonEvent(display, 1, 1, 1);
+            btnPress = 0;
+            btnRel = 1;
+          }
+        }
+        else{
+          if(btnRel == 1) {
+            XTestFakeButtonEvent(display, 1, 0, 1);
+            btnRel = 0;
+          }
+          else
+            btnPress = 1;
+        }
+      }
     }
+
+    XFlush(display);
+    XCloseDisplay(display);
+  }
   else {
-      motionEnable = 0;
-    }
+    motionEnable = 0;
+  }
 
   /*
    * display images
@@ -525,11 +525,11 @@ int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
   double moment00 = moment.m00;
 
   if(moment00 > 20000 && moment00 < 20000000) {
-      *posx = moment10 / moment00;
-      *posy = moment01 / moment00;
+    *posx = moment10 / moment00;
+    *posy = moment01 / moment00;
 
-      return 1;
-    }
+    return 1;
+  }
   else
     return 0;
 }
@@ -537,15 +537,15 @@ int ishara::trackObject(cv::Mat *imgThresh, int *posx, int *posy) {
 void ishara::getxScreenSize() {
   Display *display = XOpenDisplay(0);
   if(!display) {
-      ui->statusBar->showMessage("Error opening display!");
-      return;
-    }
+    ui->statusBar->showMessage("Error opening display!");
+    return;
+  }
 
   Screen *screen = DefaultScreenOfDisplay(display);
   if(!screen) {
-      ui->statusBar->showMessage("Screen not found!");
-      return;
-    }
+    ui->statusBar->showMessage("Screen not found!");
+    return;
+  }
 
   xScreenWidth = screen -> width;
   xScreenHeight = screen -> height;
@@ -569,11 +569,11 @@ void::ishara::mouseMap() {
     msFlag = 0;
 
   if(msFlag == 1) {
-      msPoint_X = mcorInit_X;
-      msPoint_Y = mcorInit_Y;
+    msPoint_X = mcorInit_X;
+    msPoint_Y = mcorInit_Y;
 
-      msFlag = 0;
-    }
+    msFlag = 0;
+  }
 
   cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), smoothFac, cv::Scalar(0, 255, 0), 2);
   cv::circle(frame, cv::Point(msPoint_X, msPoint_Y), 2, cv::Scalar(0, 255, 0), 2);
@@ -614,41 +614,41 @@ void::ishara::scrollInit(int *x, int *y) {
 
 void ishara::startStop() {
   if(startEmulation == 0) {
-      startEmulation = 1;
-      if (QSystemTrayIcon::isSystemTrayAvailable()) {
-          startStopAction->setText("S&top");
-        }
-      ui->btnStartStop->setText("Stop");
-      ui->actionStart->setText("Stop");
+    startEmulation = 1;
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+      startStopAction->setText("S&top");
     }
+    ui->btnStartStop->setText("Stop");
+    ui->actionStart->setText("Stop");
+  }
   else {
-      startEmulation = 0;
-      if (QSystemTrayIcon::isSystemTrayAvailable()) {
-          startStopAction->setText("S&tart");
-        }
-      ui->btnStartStop->setText("Start");
-      ui->actionStart->setText("Start");
+    startEmulation = 0;
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+      startStopAction->setText("S&tart");
     }
+    ui->btnStartStop->setText("Start");
+    ui->actionStart->setText("Start");
+  }
 }
 
 void ishara::on_comboSelectCam_currentIndexChanged(int index)
 {
   if(devSelActive == 0) {
-      devSelActive = 1;
-    }
+    devSelActive = 1;
+  }
   else {
-      CAM_INDEX = index;
-      capture.release();
-      camOpen();
-    }
+    CAM_INDEX = index;
+    capture.release();
+    camOpen();
+  }
 }
 
 void ishara::camOpen() {
   capture.open(CAM_INDEX);
   if(capture.isOpened() == false) {
-      ui->statusBar->showMessage("Error opening camera!");
-      return;
-    }
+    ui->statusBar->showMessage("Error opening camera!");
+    return;
+  }
 }
 
 void ishara::on_chkEnableScroll_stateChanged(int arg1) {
@@ -665,9 +665,9 @@ void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
 
 void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
   if( reason == QSystemTrayIcon::DoubleClick) {
-      trayIcon->hide();
-      show();
-    }
+    trayIcon->hide();
+    show();
+  }
 }
 
 void ishara::hideEvent(QHideEvent *event) {
