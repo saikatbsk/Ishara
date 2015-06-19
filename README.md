@@ -17,7 +17,7 @@ actions that is actually done using a mouse including left-click,
 right-click, scroll and drag-n-drop.
 
 It is developed using OpenCV and Qt and written in C++.
-The initial prototype runs on Linux. There is no Mac or Windows version yet.
+The initial prototype runs on Linux and there is no Mac or Windows version yet.
 
 Requirements :white_check_mark:
 -------------------------------
