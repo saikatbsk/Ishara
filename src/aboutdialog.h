@@ -14,8 +14,8 @@ class AboutDialog : public QDialog {
         explicit AboutDialog(QWidget *parent = 0);
         ~AboutDialog();
 
-        private slots:
-            void on_btnCloseDialog_clicked();
+    private slots:
+        void on_btnCloseDialog_clicked();
 
     private:
         Ui::AboutDialog *ui;

@@ -111,8 +111,8 @@ class ishara : public QMainWindow {
         int motionEnable;
         char *suf_buffer;
 
-        private slots:
-            void startStop();
+    private slots:
+        void startStop();
         void camOpen();
         void processFrameAndUpdateGUI();
         int trackObject(cv::Mat*, int*, int*);
