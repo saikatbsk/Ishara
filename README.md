@@ -1,6 +1,6 @@
 Ishara - Mouse Control with Gesture
 ===============================================
-![alt text](http://saikatbasak.com/projects/ishara/img/banner.png "Ishara")
+![alt text](src/res/ishara_banner.png "Ishara")
 --------------------------
 Ishara is a perceptive user interface based on computer vision.
 Ishara is a gesture interpretation system and is used to emulate
