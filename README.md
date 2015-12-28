@@ -23,7 +23,7 @@ Requirements :white_check_mark:
 -------------------------------
 :pushpin: OpenCV
 
-:pushpin: Qt Development Libraries
+:pushpin: Qt5 Development Libraries
 
 :pushpin: V4l2 Development Libraries
 
@@ -32,31 +32,6 @@ Requirements :white_check_mark:
 :pushpin: CMake
 
 :pushpin: Make
-
-Compilation :arrow_forward:
----------------------------
-Once you have setup the dependencies, download the source:
-```
-$ cd ~/Downloads
-$ git clone https://github.com/saikatbsk/Ishara.git
-```
-
-Create and move into the build directory:
-```
-$ mkdir -p Ishara/build
-$ cd Ishara/build
-```
-
-Run *cmake* followed by *make* to build Ishara:
-```
-$ cmake ..
-$ make
-```
-
-To install:
-```
-$ sudo make install
-```
 
 Links :link:
 ------------
