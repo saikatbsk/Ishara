@@ -23,10 +23,6 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName("Ishara");
     QApplication::setApplicationName("Ishara");
 
-    if (QSystemTrayIcon::isSystemTrayAvailable()) {
-        QApplication::setQuitOnLastWindowClosed(false);
-    }
-
     ishara w;
     w.show();
 

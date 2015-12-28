@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>664</width>
-    <height>479</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,12 +66,6 @@
          <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="1">
            <widget class="QPushButton" name="btnStartStop">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>60</height>
-             </size>
-            </property>
             <property name="font">
              <font>
               <pointsize>9</pointsize>
@@ -836,7 +830,7 @@
      <x>0</x>
      <y>0</y>
      <width>664</width>
-     <height>19</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -859,7 +853,7 @@
     </property>
     <widget class="QMenu" name="menuGrab_Frame">
      <property name="title">
-      <string>Grab Frame</string>
+      <string>&amp;Grab Frame</string>
      </property>
      <addaction name="actionOriginal"/>
      <addaction name="actionThresh_1"/>
@@ -868,8 +862,8 @@
     <addaction name="menuGrab_Frame"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuHelp"/>
    <addaction name="menuImage"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuit">
@@ -882,7 +876,7 @@
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
    <property name="shortcut">
     <string>F1</string>
@@ -890,7 +884,7 @@
   </action>
   <action name="actionStart">
    <property name="text">
-    <string>Start</string>
+    <string>&amp;Start</string>
    </property>
    <property name="shortcut">
     <string>F9</string>
@@ -898,7 +892,7 @@
   </action>
   <action name="actionOriginal">
    <property name="text">
-    <string>Original</string>
+    <string>&amp;Original</string>
    </property>
    <property name="shortcut">
     <string>Alt+C</string>
@@ -906,7 +900,7 @@
   </action>
   <action name="actionThresh_1">
    <property name="text">
-    <string>Thresh 1</string>
+    <string>&amp;Thresh 1</string>
    </property>
    <property name="shortcut">
     <string>Alt+T</string>
@@ -914,7 +908,7 @@
   </action>
   <action name="actionThresh_2">
    <property name="text">
-    <string>Thresh 2</string>
+    <string>Thresh &amp;2</string>
    </property>
    <property name="shortcut">
     <string>Alt+Y</string>

@@ -28,21 +28,6 @@ ishara::ishara(QWidget *parent) : QMainWindow(parent), ui(new Ui::ishara) {
 
         startStopAction = new QAction(tr("S&tart"), this);
         connect(startStopAction, SIGNAL(triggered()), this, SLOT(startStop()));
-
-        trayIconMenu = new QMenu(this);
-        trayIconMenu->addAction(maximizeAction);
-        trayIconMenu->addSeparator();
-        trayIconMenu->addAction(startStopAction);
-        trayIconMenu->addSeparator();
-        trayIconMenu->addAction(quitAction);
-        trayIcon = new QSystemTrayIcon(this);
-        trayIcon->setContextMenu(trayIconMenu);
-
-        connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-        const QIcon *icon = new QIcon(":/prefix1/res/ishara.ico");
-        trayIcon->setIcon(*icon);
-        trayIcon->hide();
     }
 
     /*
@@ -668,23 +653,6 @@ void ishara::on_chkEnableLeftClick_stateChanged(int arg1) {
 
 void ishara::on_chkEnableRightClick_stateChanged(int arg1) {
     cfgRClick = arg1;
-}
-
-void ishara::iconActivated(QSystemTrayIcon::ActivationReason reason) {
-    if( reason == QSystemTrayIcon::DoubleClick) {
-        trayIcon->hide();
-        show();
-    }
-}
-
-void ishara::hideEvent(QHideEvent *event) {
-    trayIcon->show();
-    event->accept();
-}
-
-void ishara::showEvent(QShowEvent *event) {
-    trayIcon->hide();
-    event->accept();
 }
 
 void ishara::on_spnHMin1_valueChanged(int arg1) {

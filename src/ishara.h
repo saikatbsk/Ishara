@@ -34,9 +34,6 @@ class ishara : public QMainWindow {
         ~ishara();
 
     private:
-        void hideEvent(QHideEvent *event);
-        void showEvent(QShowEvent *event);
-
         Ui::ishara *ui;
         cv::VideoCapture capture;
 
@@ -46,8 +43,6 @@ class ishara : public QMainWindow {
         QAction *maximizeAction;
         QAction *quitAction;
         QAction *startStopAction;
-        QMenu *trayIconMenu;
-        QSystemTrayIcon *trayIcon;
         QSettings settings;
 
         cv::Mat src;
@@ -158,7 +153,6 @@ class ishara : public QMainWindow {
         void on_chkEnableScroll_stateChanged(int arg1);
         void on_chkEnableLeftClick_stateChanged(int arg1);
         void on_chkEnableRightClick_stateChanged(int arg1);
-        void iconActivated(QSystemTrayIcon::ActivationReason reason);
         void on_actionOriginal_triggered();
         void on_actionThresh_1_triggered();
         void on_actionThresh_2_triggered();
