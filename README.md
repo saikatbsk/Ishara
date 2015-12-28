@@ -17,7 +17,7 @@ actions that is actually done using a mouse including left-click,
 right-click, scroll and drag-n-drop.
 
 It is developed using OpenCV and Qt and written in C++.
-The initial prototype runs on Linux and there is no Mac or Windows version yet.
+The initial prototype runs on Linux. There is no Mac or Windows version yet.
 
 Requirements :white_check_mark:
 -------------------------------
@@ -33,8 +33,34 @@ Requirements :white_check_mark:
 
 :pushpin: Make
 
+Compilation :arrow_forward:
+---------------------------
+Once you have setup the dependencies, download the source:
+```
+$ cd ~/Downloads
+$ git clone https://github.com/saikatbsk/Ishara.git
+```
+
+Create and move into the build directory:
+```
+$ mkdir -p Ishara/build
+$ cd Ishara/build
+```
+
+Run *cmake* followed by *make* to build Ishara:
+```
+$ cmake ..
+$ make
+```
+
+To install:
+```
+$ sudo make install
+```
+
 Links :link:
 ------------
+* [Ishara URL](http://saikatbasak.com/projects/ishara/)
 * [Ishara on Youtube](https://www.youtube.com/watch?v=B1_xtdR8pn4)
 * [OpenCV](http://opencv.org/)
 
