@@ -2,22 +2,7 @@ Ishara - Mouse Control with Gesture
 ===============================================
 ![alt text](src/res/ishara_banner.png "Ishara")
 --------------------------
-Ishara is a perceptive user interface based on computer vision.
-Ishara is a gesture interpretation system and is used to emulate
-the computer mouse with finger gestures. The objective behind
-this project was to develop an intuitive and fun way to interact
-with computers and other digital devices.
-Ishara started as a hobby project and became open source in 2013.
-
-Ishara consists of a built-in or USB webcam and a software developed
-through this project. The camera is placed on top of the display screen
-facing the user and the user uses two different color-markers on the
-fingers to control the mouse pointer. The user can do all shorts of
-actions that is actually done using a mouse including left-click,
-right-click, scroll and drag-n-drop.
-
-It is developed using OpenCV and Qt and written in C++.
-The initial prototype runs on Linux. There is no Mac or Windows version yet.
+An interface for controlling mouse pointer using finger gestures. Requires an ordinary webcam. A user can use two different color markers on his/her fingers to control mouse movements. Includes gestures for emulating click(left and right) and scroll. Developed using C++, OpenCV and Qt.
 
 Requirements :white_check_mark:
 -------------------------------
