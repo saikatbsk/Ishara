@@ -45,7 +45,6 @@ $ sudo make install
 
 Links :link:
 ------------
-* [Ishara URL](http://saikatbasak.com/projects/ishara/)
 * [Ishara on Youtube](https://www.youtube.com/watch?v=B1_xtdR8pn4)
 * [OpenCV](http://opencv.org/)
 
