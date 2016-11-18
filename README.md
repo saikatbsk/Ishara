@@ -2,7 +2,7 @@ Ishara - Mouse Control with Gesture
 ===============================================
 ![alt text](src/res/ishara_banner.png "Ishara")
 --------------------------
-An interface for controlling mouse pointer using finger gestures. Requires an ordinary webcam. A user can use two different color markers on his/her fingers to control mouse movements. Includes gestures for emulating click(left and right) and scroll. Developed using C++, OpenCV and Qt.
+An interface for controlling mouse pointer using finger gestures. Requires a webcam. A user can use two different color markers on his/her fingers to control mouse movements. Includes gestures for emulating click (left and right) and scroll.
 
 Requirements :white_check_mark:
 -------------------------------
